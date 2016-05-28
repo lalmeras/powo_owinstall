@@ -1,0 +1,15 @@
+- name: cinnamon repository
+  apt_repository:
+    repo: ppa:tsvetko.tsvetkov/cinnamon
+    validate_certs: "{{ common.validate_ssl_certs }}"
+
+- name: cinnamon installation
+  package: pkg={{ item }}
+  with_items:
+    - cinnamon
+    - python-lxml
+    - gir1.2-gnomedesktop-3.0
+    - gnome-icon-theme
+    - gnome-icon-theme-extras
+    - gnome-icon-theme-full
+  when: "{{ desktop.cinnamon.enabled }}"

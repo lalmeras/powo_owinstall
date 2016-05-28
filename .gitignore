@@ -1,0 +1,4 @@
+.vagrant
+env.sh
+playbooks/vars/env.yml
+playbooks/vars/first-run.yml

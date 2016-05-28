@@ -1,0 +1,26 @@
+- name: apache packages
+  package: pkg={{ item }}
+  with_items:
+      - apache2
+
+- name: apache modules
+  apache2_module:
+      state: present
+      name: "{{ item }}"
+  with_items:
+      - proxy
+      - proxy_http
+      - proxy_ajp
+      - rewrite
+      - expires
+
+- name: php install
+  package: pkg={{ item }}
+  with_items:
+      - php5
+      - php5-mysql
+      - php5-cli
+      - php5-gd
+      - php5-pgsql
+      - libapache2-mod-php5
+

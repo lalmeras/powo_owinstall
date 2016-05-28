@@ -1,0 +1,8 @@
+- name: gsettings check {{ schema }}:{{ key }} = {{ value|string|truncate(45, True) }}
+  command: dbus-launch --exit-with-session gsettings get "{{ schema }}" "{{ key }}"
+  register: gsettings_value
+  changed_when: false
+
+- name: gsettings set {{ schema }}:{{ key }} = {{ value|string|truncate(45, True) }}
+  command: dbus-launch --exit-with-session gsettings set "{{ schema }}" "{{ key }}" "{{ value }}"
+  when: "{{ gsettings_value.stdout|string != value|string }}"

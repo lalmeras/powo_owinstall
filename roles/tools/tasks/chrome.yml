@@ -1,0 +1,23 @@
+---
+- name: google chrome repository
+  apt_repository:
+    repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+    state: present
+    filename: google-chrome.list
+  when: "{{ ansible_architecture == '86_64' }}"
+  register: t_chrome_repository
+
+- name: google chrome repository keys
+  apt_key: id=4CCA1EAF950CEE4AB83976DCA040830F7FAC5991 keyserver=keys.gnupg.net
+  when: "{{ not t_chrome_repository.skipped }}"
+
+- name: google chrome installation
+  package: name=google-chrome-stable state=present
+  when: "{{ not t_chrome_repository.skipped }}"
+
+- name: google chrome installation
+  debug: msg="google chrome is unsupported on x86 architecture ; use chromium"
+  when: "{{ t_chrome_repository.skipped }}"
+
+- name: chromium installation
+  package: name=chromium-browser state=present

@@ -1,0 +1,16 @@
+---
+- name: check apparmor
+  shell: >
+    which apparmor_status
+    && apparmor_status
+  register: apparmor_is_enabled
+  ignore_errors: yes
+
+- name: disable apparmor
+  shell: >
+    invoke-rc.d apparmor teardown
+    && update-rc.d -f apparmor remove
+  when: apparmor_is_enabled|success
+
+- name: remove apparmor
+  package: name=apparmor state=absent

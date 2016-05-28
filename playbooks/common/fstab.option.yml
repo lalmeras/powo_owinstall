@@ -1,0 +1,13 @@
+- name: check option {{ option }} on {{ mount }}
+  augeas:
+    command: match
+    path: "/files/etc/fstab/*[file = '{{ mount }}'][vfstype = '{{ type }}'][count(opt[.='noatime']) = 0]"
+  register: fstab_opt
+
+- name: set {{ option }} on {{ mount }}
+  augeas:
+    commands: |
+      ins opt after {{ item.label }}/opt[last()]
+      set {{ item.label }}/opt[last()] {{ option }}
+  with_items: "{{ fstab_opt.result }}"
+  when: "fstab_opt.result|length != 0"

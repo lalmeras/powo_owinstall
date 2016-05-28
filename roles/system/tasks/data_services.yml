@@ -1,0 +1,8 @@
+
+- name: /data/services folder
+  file:
+    path: /data/services
+    state: directory
+    mode: ugo+rwx
+    owner: root
+    group: root

@@ -1,0 +1,13 @@
+- name: openssh install
+  package: pkg={{ item }}
+  with_items:
+      - openssh-server
+      - openssh-client
+
+- name: openssh PermitRootLogin=yes
+  augeas:
+      command: set
+      path: /files/etc/ssh/sshd_config/PermitRootLogin
+      # quotes needed to disable boolean cast
+      value: "yes"
+

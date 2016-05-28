@@ -1,0 +1,35 @@
+- name: rdesktop install
+  package: pkg={{ item }}
+  with_items:
+      - rdesktop
+
+- name: rdesktop desktop file
+  template:
+    dest: "{{ powo_home }}/.local/share/applications/remote.desktop"
+    force: yes
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    src: ../files/remote-desktop.jinja
+
+- name: misc install
+  package: pkg={{ item }}
+  with_items:
+      - vim
+      - gimp
+      - thunderbird
+      - thunderbird-gnome-support
+      - thunderbird-locale-fr
+      - subversion
+      - libsvn-java
+      - git
+      - libnotify-bin
+      - flashplugin-installer
+      - screen
+      - tmux
+      - tree
+      - dconf-tools
+      - pwgen
+      - ack-grep
+      - graphviz
+      - imagemagick
+      - cifs-utils

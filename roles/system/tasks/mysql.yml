@@ -1,0 +1,39 @@
+- name: mysql
+  package: pkg={{ item }}
+  with_items:
+      - mysql-client
+      - mysql-server
+
+- name: /var/lib/mysql symlink
+  file:
+      path: /var/lib/mysql
+      state: link
+      src: /data/services/mysql
+  ignore_errors: true
+  register: var_mysql_link
+
+- block:
+    - name: stopping mysql
+      service: name=mysql state=stopped
+
+    - name: checking /data/services/mysql
+      stat: path=/data/services/mysql
+      register: data_mysql
+
+    - name: backup existing /data/services/mysql
+      command: mv /data/services/mysql /data/services/mysql.back
+      when: "{{ data_mysql.stat.exists }}"
+
+    - name: moving /var/lib/mysql to /data/services/mysql
+      command: mv -t /data/services /var/lib/mysql
+
+  when: "{{ var_mysql_link.state == 'directory' }}"
+
+- name: /var/lib/mysql symlink
+  file:
+      path: /var/lib/mysql
+      state: link
+      src: /data/services/mysql
+
+- name: starting mysql
+  service: name=mysql state=started

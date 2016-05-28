@@ -1,0 +1,19 @@
+- name: mountpoint - /tmp
+  mount:
+    name: /tmp
+    src: tmpfs
+    fstype: tmpfs
+    state: present
+
+- name: mountpoint - /var/tmp
+  mount:
+    name: /var/tmp
+    src: tmpfs
+    fstype: tmpfs
+    state: present
+
+- name: mountpoints options
+  include: common/fstab.option.yml option=noatime type=ext4 mount=/
+
+- name: mountpoints options
+  include: common/fstab.option.yml option=noatime type=ext4 mount=/data

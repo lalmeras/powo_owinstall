@@ -1,0 +1,5 @@
+distribution: "{{ item.value }}"
+archive_destination_folder: "{{ powo_home }}/Documents/tools/maven"
+archive_destination: "{{ archive_destination_folder }}/{{ item.value.target_filename }}"
+install_destination: "{{ powo_home }}/Documents/apps/{{ item.value.target_directory }}"
+maven_bin_path: "{{ install_destination }}/bin/mvn"

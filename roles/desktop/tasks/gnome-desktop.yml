@@ -1,0 +1,6 @@
+- name: gnome-shell installation
+  package: pkg={{ item }}
+  with_items:
+      - ubuntu-gnome-desktop
+      - gnome-tweak-tool
+  when: "{{ desktop.gnome.enabled }}"

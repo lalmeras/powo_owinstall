@@ -1,0 +1,21 @@
+- name: virtualbox repository keys
+  apt_key: id=7B0FAB3A13B907435925D9C954422A4B98AB5139 keyserver=keys.gnupg.net
+
+- name: virtualbox repository
+  apt_repository:
+    repo: deb http://download.virtualbox.org/virtualbox/debian trusty non-free contrib
+    state: present
+    # currently not supported
+    # filename: virtualbox.list
+
+- name: dkms installation
+  package: name=dkms state=present
+
+- name: virtualbox installation
+  package: name=virtualbox-5.0 state=present
+
+- name: "{{ powo_user }} in group vboxusers"
+  user:
+      name: "{{ powo_user }}"
+      groups: vboxusers
+      append: yes

@@ -1,0 +1,4 @@
+- include: python-apt.yml
+
+- name: libaugeas install
+  package: pkg=libaugeas0
