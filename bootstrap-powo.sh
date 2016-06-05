@@ -33,7 +33,7 @@ export PATH=$PATH:${virtualenv_path}/bin
 
 mkdir /var/log/powo
 
-if [ "${vagrant_dev?false}" == "false" ]; then
+if [ "${vagrant_dev:-false}" == "false" ]; then
 	echo "powo repository cloned in /root"
 	git clone https://github.com/openwide-java/powo.git /root/powo
 	base_path=/root/powo
