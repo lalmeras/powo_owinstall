@@ -10,7 +10,7 @@ popd
 
 powo_path="/usr/local/powo"
 etc_path="/etc/powo"
-playbooks_path="${etc_path}/playbooks"
+playbooks_path="/etc/powo-playbooks"
 roles_path="${powo_path}/roles"
 dependencies_path="${powo_path}/ansible-dependencies"
 virtualenv_path="${powo_path}/virtualenv"
@@ -33,13 +33,22 @@ export PATH=$PATH:${virtualenv_path}/bin
 
 mkdir /var/log/powo
 
-if [ "${vagrant_dev?false}" != "false" ]; then
-	ln -s /vagrant/etc ${etc_path}
-	ln -s /vagrant/playbooks ${playbooks_path}
-	ln -s /vagrant/roles ${roles_path}
+if [ "${vagrant_dev?false}" == "false" ]; then
+	echo "powo repository cloned in /root"
+	git clone https://github.com/openwide-java/powo.git /root/powo
+	base_path=/root/powo
+	if [ -f /vagrant/playbooks/vars/env.yml ]; then
+		cp /vagrant/playbooks/vars/env.yml /root/powo/playbooks/vars/env.yml
+	elif [ -f ./env.yml ]; then
+		cp env.yml
+	fi
 else
-	echo TODO
+	base_path=/vagrant
 fi
+
+ln -s ${base_path}/etc ${etc_path}
+ln -s ${base_path}/playbooks ${playbooks_path}
+ln -s ${base_path}/roles ${roles_path}
 
 # during /home move, cwd must not be /home
 cd /root

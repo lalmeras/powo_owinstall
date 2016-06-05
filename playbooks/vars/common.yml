@@ -1,5 +1,5 @@
-powo_password:
-powo_passphrase:
+powo_password: "{{ lookup('env', 'POWO_PASSWORD') }}"
+powo_passphrase: "{{ lookup('env', 'POWO_PASSPHRASE') }}"
 
 common:
     validate_ssl_certs: true

@@ -1,27 +1,5 @@
 - include: cinnamon.yml
+- include: gnome-desktop.yml
 
-- include: ../include/gsettings.yml
-  vars:
-    schema: "{{ item.schema }}"
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-  with_items: "{{ desktop.gsettings }}"
-  become: yes
-  become_user: "{{ powo_user }}"
-
-- name: calendar settings folder
-  file:
-    path: "{{ powo_home }}/.cinnamon/configs/calendar@cinnamon.org"
-    state: directory
-    mode: ugo+rwx
-    owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
-
-- name: calendar settings
-  copy:
-    dest: "{{ powo_home }}/.cinnamon/configs/calendar@cinnamon.org/calendar@cinnamon.org.json"
-    src: ../files/calendar@cinnamon.org.json
-    force: yes
-    mode: ugo+rwx
-    owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
+- name: lightdm install
+  package: pkg=lightdm
