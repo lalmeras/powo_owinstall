@@ -31,7 +31,7 @@ pip install --upgrade pip
 pip install --upgrade ansible
 export PATH=$PATH:${virtualenv_path}/bin
 
-mkdir /var/log/powo
+mkdir -p /var/log/powo
 
 if [ "${vagrant_dev:-false}" == "false" ]; then
 	echo "powo repository cloned in /root"
@@ -40,7 +40,7 @@ if [ "${vagrant_dev:-false}" == "false" ]; then
 	if [ -f /vagrant/playbooks/vars/env.yml ]; then
 		cp /vagrant/playbooks/vars/env.yml /root/powo/playbooks/vars/env.yml
 	elif [ -f ./env.yml ]; then
-		cp env.yml
+		cp env.yml /root/powo/playbooks/vars/env.yml
 	fi
 else
 	base_path=/vagrant
