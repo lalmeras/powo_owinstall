@@ -1,26 +1,23 @@
 - name: apache packages
   package: pkg={{ item }}
-  with_items:
-      - apache2
+  with_items: "{{ apache.packages }}"
+
+- name: apache service
+  service: name={{ apache.service }} state=started enabled=true
 
 - name: apache modules
   apache2_module:
-      state: present
-      name: "{{ item }}"
+    state: present
+    name: "{{ item }}"
   with_items:
-      - proxy
-      - proxy_http
-      - proxy_ajp
-      - rewrite
-      - expires
+    - proxy
+    - proxy_http
+    - proxy_ajp
+    - rewrite
+    - expires
+  when: ansible_distribution == 'Ubuntu'
 
 - name: php install
   package: pkg={{ item }}
-  with_items:
-      - php5
-      - php5-mysql
-      - php5-cli
-      - php5-gd
-      - php5-pgsql
-      - libapache2-mod-php5
-
+  with_items: "{{ php.packages }}"
+  notify: apache restart

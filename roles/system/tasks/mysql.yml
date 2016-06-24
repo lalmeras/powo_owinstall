@@ -1,39 +1,37 @@
 - name: mysql
   package: pkg={{ item }}
-  with_items:
-      - mysql-client
-      - mysql-server
+  with_items: "{{ mysql.packages }}"
 
-- name: /var/lib/mysql symlink
+- name: "{{ mysql.data_dir }} symlink"
   file:
-      path: /var/lib/mysql
+      path: "{{ mysql.data_dir }}"
       state: link
-      src: /data/services/mysql
+      src: "{{ mysql.data_services_dir }}"
   ignore_errors: true
   register: var_mysql_link
 
 - block:
     - name: stopping mysql
-      service: name=mysql state=stopped
+      service: name={{ mysql.service }} state=stopped
 
-    - name: checking /data/services/mysql
-      stat: path=/data/services/mysql
+    - name: checking {{ mysql.data_services_dir }}
+      stat: path={{ mysql.data_services_dir }}
       register: data_mysql
 
-    - name: backup existing /data/services/mysql
-      command: mv /data/services/mysql /data/services/mysql.back
+    - name: backup existing {{ mysql.data_services_dir }}
+      command: mv {{ mysql.data_services_dir }} {{ mysql.data_services_dir }}.back
       when: "{{ data_mysql.stat.exists }}"
 
-    - name: moving /var/lib/mysql to /data/services/mysql
-      command: mv -t /data/services /var/lib/mysql
+    - name: moving {{ mysql.data_dir }} to {{ mysql.data_services_dir }}
+      shell: mv -t $( dirname "{{ mysql.data_services_dir }}" ) {{ mysql.data_dir }}
 
   when: "{{ var_mysql_link.state == 'directory' }}"
 
-- name: /var/lib/mysql symlink
+- name: "{{ mysql.data_dir }} symlink"
   file:
-      path: /var/lib/mysql
+      path: "{{ mysql.data_dir }}"
       state: link
-      src: /data/services/mysql
+      src: "{{ mysql.data_services_dir }}"
 
 - name: starting mysql
-  service: name=mysql state=started
+  service: name={{ mysql.service }} state=started

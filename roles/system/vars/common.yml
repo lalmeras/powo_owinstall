@@ -1,0 +1,5 @@
+mysql:
+  data_services_dir: /data/services/mysql
+
+postgresql:
+  data_services_dir: /data/services/postgresql

@@ -27,7 +27,7 @@
 
 - name: profile.d loading
   blockinfile:
-    create: false
+    create: yes
     dest: "{{ powo_home }}/.profile"
     owner: "{{ powo_user }}"
     group: "{{ powo_user }}"

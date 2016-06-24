@@ -1,4 +1,3 @@
----
 - name: google chrome repository
   apt_repository:
     repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
@@ -19,5 +18,16 @@
   debug: msg="google chrome is unsupported on x86 architecture ; use chromium"
   when: "{{ t_chrome_repository.skipped }}"
 
+- name: chromium repository
+  yum_repository:
+    name: fedora-chromium-stable
+    description: Build of the stable tag of the Chromium Web Browser
+    baseurl: https://repos.fedorapeople.org/repos/spot/chromium-stable/fedora-$releasever/$basearch/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: http://repos.fedorapeople.org/repos/spot/chromium/spot.gpg
+  when: ansible_distribution == 'Fedora'
+
 - name: chromium installation
-  package: name=chromium-browser state=present
+  package: name={{ item }} state=present
+  with_items: "{{ chromium.packages }}"

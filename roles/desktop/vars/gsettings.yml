@@ -20,21 +20,23 @@ gsettings:
   - schema: org.cinnamon
     key: enable-edge-flip
     value: "false"
-  - schema: org.cinnamon
-    key: enabled-applets
-    value: "['panel1:left:0:menu@cinnamon.org:34', 'panel1:left:2:panel-launchers@cinnamon.org:35', 'panel1:right:2:settings@cinnamon.org:36', 'panel1:right:4:network@cinnamon.org:37', 'panel1:right:5:sound@cinnamon.org:38', 'panel1:right:8:calendar@cinnamon.org:39', 'panel2:left:1:window-list@cinnamon.org:40', 'panel2:left:0:show-desktop@cinnamon.org:41', 'panel2:right:0:workspace-switcher@cinnamon.org:42', 'panel1:right:0:xrandr@cinnamon.org:43', 'panel1:right:0:brightness@cinnamon.org:45', 'panel1:right:0:power@cinnamon.org:47', 'panel1:right:0:systray@cinnamon.org:48']"
+#  deprecated
+#  - schema: org.cinnamon
+#    key: enabled-applets
+#    value: "['panel1:left:0:menu@cinnamon.org:34', 'panel1:left:2:panel-launchers@cinnamon.org:35', 'panel1:right:2:settings@cinnamon.org:36', 'panel1:right:4:network@cinnamon.org:37', 'panel1:right:5:sound@cinnamon.org:38', 'panel1:right:8:calendar@cinnamon.org:39', 'panel2:left:1:window-list@cinnamon.org:40', 'panel2:left:0:show-desktop@cinnamon.org:41', 'panel2:right:0:workspace-switcher@cinnamon.org:42', 'panel1:right:0:xrandr@cinnamon.org:43', 'panel1:right:0:brightness@cinnamon.org:45', 'panel1:right:0:power@cinnamon.org:47', 'panel1:right:0:systray@cinnamon.org:48']"
   - schema: org.cinnamon
     key: favorite-apps
     value: "['firefox.desktop', 'thunderbird.desktop', 'gnome-terminal.desktop', 'nautilus.desktop', 'cinnamon-settings.desktop']"
   - schema: org.cinnamon
     key: number-workspaces
     value: 6
-  - schame: org.cinnamon
-    key: panel-launchers
-    value: "['firefox.desktop', 'thunderbird.desktop', 'gnome-terminal.desktop', 'nautilus.desktop', 'virtualbox.desktop', 'remote-lyon.desktop', 'eclipse.desktop']"
+#  deprecated
+#  - schema: org.cinnamon
+#    key: panel-launchers
+#    value: "['firefox.desktop', 'thunderbird.desktop', 'gnome-terminal.desktop', 'nautilus.desktop', 'virtualbox.desktop', 'remote-lyon.desktop', 'eclipse.desktop']"
   - schema: org.cinnamon.desktop.wm.preferences
     key: focus-mode
-    value: sloppy
+    value: "'sloppy'"
   - schema: org.freedesktop.ibus.general.hotkey
     key: triggers
     value: "[]"

@@ -1,0 +1,7 @@
+---
+- name: "{{ packages.python_package }} install"
+  package: pkg={{ packages.python_package }}
+
+- name: python-selinux
+  package: pkg=libselinux-python
+  when: ansible_distribution == 'Fedora'

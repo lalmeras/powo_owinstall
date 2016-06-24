@@ -1,3 +1,0 @@
----
-- name: python-apt installation
-  package: name=python-apt state=present

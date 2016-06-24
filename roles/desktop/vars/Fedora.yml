@@ -1,0 +1,11 @@
+gnome:
+  packages:
+    - gnome-desktop3
+
+cinnamon:
+  packages:
+    - cinnamon
+    - python-lxml
+    - ibus-gtk3
+    - gnome-icon-theme
+    - gnome-icon-theme-extras

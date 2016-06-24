@@ -19,8 +19,14 @@ mkdir -p ${powo_path}
 mkdir -p ${virtualenv_path}
 mkdir -p ${dependencies_path}
 
-apt-get update
-apt-get install -y python-virtualenv python-dev git libssl-dev libffi-dev
+if which apt-get &> /dev/null; then
+	apt-get update
+	apt-get install -y python-virtualenv python-dev git libssl-dev libffi-dev
+fi
+if which dnf &> /dev/null; then
+	dnf groupinstall ${dnf_trust} --refresh -y -v "Development Tools"
+	dnf install ${dnf_trust} --refresh -y -v redhat-rpm-config python-virtualenv python-devel git openssl-devel libffi-devel python2-dnf
+fi
 
 if [ ! -d "${virtualenv_path}/bin" ]; then
 	virtualenv --system-site-packages ${virtualenv_path}
@@ -35,20 +41,26 @@ mkdir -p /var/log/powo
 
 if [ "${vagrant_dev:-false}" == "false" ]; then
 	echo "powo repository cloned in /root"
-	git clone https://github.com/openwide-java/powo.git /root/powo
 	base_path=/root/powo
+	if [ ! -d "$base_path" ]; then
+		git clone https://github.com/openwide-java/powo.git $base_path
+	fi
+	git pull $base_path
 	if [ -f /vagrant/playbooks/vars/env.yml ]; then
-		cp /vagrant/playbooks/vars/env.yml /root/powo/playbooks/vars/env.yml
+		cp /vagrant/playbooks/vars/env.yml $base_path/playbooks/vars/env.yml
 	elif [ -f ./env.yml ]; then
-		cp env.yml /root/powo/playbooks/vars/env.yml
+		cp env.yml "$base_path/playbooks/vars/env.yml"
 	fi
 else
 	base_path=/vagrant
+	if which dnf &> /dev/null; then
+		echo sslverify=False >> /etc/dnf/dnf.conf
+	fi
 fi
 
-ln -s ${base_path}/etc ${etc_path}
-ln -s ${base_path}/playbooks ${playbooks_path}
-ln -s ${base_path}/roles ${roles_path}
+ln -sf -T ${base_path}/etc ${etc_path}
+ln -sf -T ${base_path}/playbooks ${playbooks_path}
+ln -sf -T ${base_path}/roles ${roles_path}
 
 # during /home move, cwd must not be /home
 cd /root

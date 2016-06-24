@@ -1,0 +1,32 @@
+mysql:
+  data_dir: /var/lib/mysql
+  packages:
+    - mariadb
+    - mariadb-server
+  service: mariadb
+
+postgresql:
+  data_dir: /var/lib/pgsql
+  conf_dir: /var/lib/pgsql/data
+  packages:
+    - postgresql
+    - postgresql-server
+    - postgresql-contrib
+  service: postgresql
+
+apache:
+  packages:
+    - httpd
+  service: httpd
+
+php:
+  packages:
+    - php
+    - php-mysqlnd
+    - php-cli
+    - php-gd
+    - php-pgsql
+
+openssh:
+  packages:
+    - openssh

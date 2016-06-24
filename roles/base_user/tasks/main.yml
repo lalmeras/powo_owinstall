@@ -1,8 +1,12 @@
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+
 - name: "{{ powo_user }} user creation"
   user:
       name: "{{ powo_user }}"
       shell: /bin/bash
-      groups: adm,sudo
+      groups: "{{ user.groups }}"
       append: yes
       comment: "{{ powo_fullname }}"
       createhome: yes

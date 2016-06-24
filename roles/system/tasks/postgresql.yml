@@ -1,43 +1,53 @@
 - name: postgresql
   package: pkg={{ item }}
-  with_items:
-      - postgresql
-      - postgresql-client
-      - postgresql-contrib
+  with_items: "{{ postgresql.packages }}"
 
-- name: /var/lib/postgresql symlink
+- name: postgresql db init
+  command: /usr/bin/postgresql-setup initdb
+  args:
+    creates: "{{ postgresql.data_dir }}/data/PG_VERSION"
+  when: ansible_distribution == 'Fedora'
+  notify: postgresql restart
+
+- name: postgresql service
+  service:
+    name: "{{ postgresql.service }}"
+    state: started
+    enabled: yes
+
+- name: "{{ postgresql.data_dir }} symlink"
   file:
-      path: /var/lib/postgresql
+      path: "{{ postgresql.data_dir }}"
       state: link
-      src: /data/services/postgresql
+      src: "{{ postgresql.data_services_dir }}"
   ignore_errors: true
   register: var_postgresql_link
 
 - block:
     - name: stopping postgresql
-      service: name=postgresql state=stopped
+      service: name={{ postgresql.service }} state=stopped
 
-    - name: checking /data/services/postgresql
-      stat: path=/data/services/postgresql
+    - name: checking {{ postgresql.data_services_dir }}
+      stat: path={{ postgresql.data_services_dir }}
       register: data_postgresql
 
-    - name: backup existing /data/services/postgresql
-      command: mv /data/services/postgresql /data/services/postgresql.back
+    - name: backup existing {{ postgresql.data_services_dir }}
+      command: mv {{ postgresql.data_services_dir }} {{ postgresql.data_services_dir }}.back
       when: "{{ data_postgresql.stat.exists }}"
 
-    - name: moving /var/lib/postgresql to /data/services/postgresql
-      command: mv -t /data/services /var/lib/postgresql
+    - name: moving {{ postgresql.data_dir }} to {{ postgresql.data_services_dir }}
+      command: mv "{{ postgresql.data_dir }}" "{{ postgresql.data_services_dir }}"
 
   when: "{{ var_postgresql_link.state == 'directory' }}"
 
-- name: /var/lib/postgresql symlink
+- name: "{{ postgresql.data_dir }} symlink"
   file:
-      path: /var/lib/postgresql
+      path: "{{ postgresql.data_dir }}"
       state: link
-      src: /data/services/postgresql
+      src: "{{ postgresql.data_services_dir }}"
 
 - name: starting postgresql
-  service: name=postgresql state=started
+  service: name={{ postgresql.service }} state=started
 
 - name: postgresql shared memory
   sysctl:
@@ -50,18 +60,18 @@
 - name: postgresql network
   augeas:
       command: match
-      path: /files/etc/postgresql/9.3/main/postgresql.conf/listen_addresses[ . = '*' ]
+      path: /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses[ . = '*' ]
   register: listen_addresses
 
 - name: postgresql network
   augeas:
       command: match
-      path: "/files/etc/postgresql/9.3/main/postgresql.conf/#comment[ . =~ regexp('.*listen_addresses.=..*') ]"
+      path: "/files{{ postgresql.conf_dir }}/postgresql.conf/#comment[ . =~ regexp('.*listen_addresses.=..*') ]"
   register: listen_addresses_comment
 
 - name: postgresql network
   augeas:
-      commands: set /files/etc/postgresql/9.3/main/postgresql.conf/listen_addresses *
+      commands: set /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses *
   notify: postgresql restart
   when: listen_addresses.result|length == 0 and listen_addresses_comment.result|length == 0
 
@@ -69,30 +79,30 @@
   augeas:
       commands: |
           ins listen_addresses before {{ listen_addresses_comment.result[0].label }}
-          set /files/etc/postgresql/9.3/main/postgresql.conf/listen_addresses *
+          set /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses *
   notify: postgresql restart
   when: listen_addresses.result|length == 0 and listen_addresses_comment.result|length != 0
 
 - name: postgresql security (postgres/local)
   augeas:
       command: match
-      path: "/files/etc/postgresql/9.3/main/pg_hba.conf/*[type='local'][database='all'][user='postgres'][method='trust']"
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres'][method='trust']"
   register: local_postgres_trust
 
 - name: postgresql security (postgres/local)
   augeas:
       command: match
-      path: "/files/etc/postgresql/9.3/main/pg_hba.conf/*[type='local'][database='all'][user='postgres']"
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres']"
   register: local_postgres
 
 - name: postgresql security (postgres/local)
   augeas:
       commands: |
-          ins 01 before /files/etc/postgresql/9.3/main/pg_hba.conf/1
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/type local
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/database all
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/user postgres
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/method trust
+          ins 01 before /files{{ postgresql.conf_dir }}/pg_hba.conf/1
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type local
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user postgres
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method trust
   notify: postgresql restart
   when: local_postgres_trust.result|length == 0 and local_postgres.result|length == 0
 
@@ -106,23 +116,23 @@
 - name: postgresql security (all/local)
   augeas:
       command: match
-      path: "/files/etc/postgresql/9.3/main/pg_hba.conf/*[type='local'][database='all'][user='all'][method='trust']"
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all'][method='trust']"
   register: local_all_trust
 
 - name: postgresql security (all/local)
   augeas:
       command: match
-      path: "/files/etc/postgresql/9.3/main/pg_hba.conf/*[type='local'][database='all'][user='all']"
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all']"
   register: local_all
 
 - name: postgresql security (all/local)
   augeas:
       commands: |
-          ins 01 before /files/etc/postgresql/9.3/main/pg_hba.conf/1
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/type local
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/database all
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/user all
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/method trust
+          ins 01 before /files{{ postgresql.conf_dir }}/pg_hba.conf/1
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type local
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method trust
   notify: postgresql restart
   when: local_all_trust.result|length == 0 and local_all.result|length == 0
 
@@ -136,24 +146,24 @@
 - name: postgresql security (all/network)
   augeas:
       command: match
-      path: "/files/etc/postgresql/9.3/main/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0'][method='md5']"
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0'][method='md5']"
   register: network_all_trust
 
 - name: postgresql security (all/network)
   augeas:
       command: match
-      path: "/files/etc/postgresql/9.3/main/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0']"
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0']"
   register: network_all
 
 - name: postgresql security (all/network)
   augeas:
       commands: |
-          ins 01 after /files/etc/postgresql/9.3/main/pg_hba.conf/*[type=\'host\'][last()]
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/type host
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/database all
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/user all
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/address 0.0.0.0/0
-          set /files/etc/postgresql/9.3/main/pg_hba.conf/01/method md5
+          ins 01 after /files{{ postgresql.conf_dir }}/pg_hba.conf/*[type=\'host\'][last()]
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type host
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/address 0.0.0.0/0
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method md5
   notify: postgresql restart
   when: network_all_trust.result|length == 0 and network_all.result|length == 0
 

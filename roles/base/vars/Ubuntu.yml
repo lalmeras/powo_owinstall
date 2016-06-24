@@ -1,0 +1,5 @@
+packages:
+  python_package: python-apt
+  augeas:
+    - libaugeas0
+    - augeas-tools
