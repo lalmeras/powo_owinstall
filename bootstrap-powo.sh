@@ -2,11 +2,9 @@
 
 set -e
 
-pushd /vagrant
-if [ -f env.sh ]; then
-	. env.sh
+if [ -f /vagrant/env.sh ]; then
+	. /vagrant/env.sh
 fi
-popd
 
 powo_path="/usr/local/powo"
 etc_path="/etc/powo"
@@ -45,7 +43,7 @@ if [ "${vagrant_dev:-false}" == "false" ]; then
 	if [ ! -d "$base_path" ]; then
 		git clone https://github.com/openwide-java/powo.git $base_path
 	fi
-	git pull $base_path
+	git -C $base_path pull
 	if [ -f /vagrant/playbooks/vars/env.yml ]; then
 		cp /vagrant/playbooks/vars/env.yml $base_path/playbooks/vars/env.yml
 	elif [ -f ./env.yml ]; then
