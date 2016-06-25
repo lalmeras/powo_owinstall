@@ -6,7 +6,7 @@
 
 - include_vars: "{{ item }}"
   with_first_found:
-    - "{{ anisble_distribution }}_{{ ansible_distribution_release }}.yml"
+    - "{{ ansible_distribution }}_{{ ansible_distribution_release }}.yml"
     - default.yml
 
 - name: 70-persistent-net.rules delete

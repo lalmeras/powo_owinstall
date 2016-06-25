@@ -11,6 +11,3 @@
     invoke-rc.d apparmor teardown
     && update-rc.d -f apparmor remove
   when: apparmor_is_enabled|success
-
-- name: remove apparmor
-  package: name=apparmor state=absent

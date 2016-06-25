@@ -1,2 +1,11 @@
 postgresql:
-  conf_dir: /etc/postgresql/9.4/main
+  conf_dir: /etc/postgresql/9.5/main
+
+php:
+  packages:
+    - php
+    - php-mysql
+    - php-cli
+    - php-gd
+    - php-pgsql
+    - libapache2-mod-php

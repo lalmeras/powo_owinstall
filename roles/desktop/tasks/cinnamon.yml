@@ -1,8 +1,16 @@
-- name: cinnamon repository
+- name: cinnamon repository (trusty)
   apt_repository:
     repo: ppa:tsvetko.tsvetkov/cinnamon
+    filename: cinnamon
     validate_certs: "{{ common.validate_ssl_certs }}"
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+
+- name: cinnamon repository (xenial)
+  apt_repository:
+    repo: ppa:embrosyn/cinnamon
+    filename: cinnamon
+    validate_certs: "{{ common.validate_ssl_certs }}"
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'xenial'
 
 - name: cinnamon installation
   package: pkg={{ item }}
