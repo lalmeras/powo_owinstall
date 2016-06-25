@@ -1,6 +1,6 @@
 - name: virtualbox repository keys
   apt_key: id={{ item }} keyserver=keys.gnupg.net
-  when: ansible_distribution == 'Ubntu'
+  when: ansible_distribution == 'Ubuntu'
   with_items:
     - 7B0FAB3A13B907435925D9C954422A4B98AB5139
     - B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
@@ -10,7 +10,7 @@
     repo: deb http://download.virtualbox.org/virtualbox/debian trusty non-free contrib
     state: present
     filename: virtualbox.list
-  when: ansible_distribution == 'Ubntu'
+  when: ansible_distribution == 'Ubuntu'
 
 - name: virtualbox repository keys
   rpm_key:
