@@ -13,7 +13,7 @@ desktop:
 eclipse:
     distributions:
         owsi-4.5-x86_64:
-            target_filename: eclipse-4.5-x86_64.tar.gz
+            target_filename: owsi-eclipse-jee-mars-4.5-linux-gtk-x86_64.tar.gz
             target_directory: eclipse-4.5-x86_64
             url: __DOWNLOAD_URL__
             checksum: __CHECKSUM__
@@ -22,7 +22,7 @@ eclipse:
 jdk:
     distributions:
         1.7.71-x86_64:
-            target_filename: jdk-7u71-linux-x86_64.tar.gz
+            target_filename: jdk-7u71-linux-x64.tar.gz
             target_directory: jdk-1.7.71-x86_64
             url: __DOWNLOAD_URL__
             checksum: md5:22761b214b1505f1a9671b124b0f44f4
