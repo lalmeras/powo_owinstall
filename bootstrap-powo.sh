@@ -19,7 +19,7 @@ mkdir -p ${dependencies_path}
 
 if which apt-get &> /dev/null; then
 	apt-get update
-	apt-get install -y python-virtualenv python-dev git libssl-dev libffi-dev
+	apt-get install -y build-essential python-virtualenv python-dev git libssl-dev libffi-dev
 fi
 if which dnf &> /dev/null; then
 	dnf groupinstall ${dnf_trust} --refresh -y -v "Development Tools"

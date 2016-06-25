@@ -1,0 +1,2 @@
+postgresql:
+  conf_dir: /etc/postgresql/9.4/main
