@@ -30,6 +30,8 @@
     dest: "{{ archive_destination }}"
     checksum: "{{ distribution.checksum }}"
     validate_certs: "{{ common.validate_ssl_certs }}"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
   become_user: "{{ powo_user }}"
 
 # unarchive does not support tar strip
