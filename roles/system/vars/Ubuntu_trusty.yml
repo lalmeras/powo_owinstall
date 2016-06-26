@@ -1,5 +1,10 @@
 postgresql:
   conf_dir: /etc/postgresql/9.3/main
+  packages:
+    - postgresql
+    - postgresql-client
+    - postgresql-contrib
+    - postgresql-9.3-postgis-2.1
 
 php:
   packages:
