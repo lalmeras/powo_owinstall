@@ -12,6 +12,7 @@ postgresql:
     - postgresql
     - postgresql-server
     - postgresql-contrib
+    - postgis
   service: postgresql
 
 apache:
