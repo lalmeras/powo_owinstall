@@ -43,6 +43,8 @@ if [ "${vagrant_dev:-false}" == "false" ]; then
 	if [ ! -d "$base_path" ]; then
 		git clone https://github.com/openwide-java/powo.git $base_path
 	fi
+	git -C $base_path reset --hard origin
+	git -C $base_path clean -df
 	git -C $base_path pull
 	if [ -f /vagrant/playbooks/vars/env.yml ]; then
 		cp /vagrant/playbooks/vars/env.yml $base_path/playbooks/vars/env.yml
