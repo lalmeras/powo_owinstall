@@ -4,3 +4,18 @@
       - "{{ gnome.packages }}"
       - gnome-tweak-tool
   when: "{{ desktop.gnome.enabled }}"
+
+- name: arc-theme repository
+  yum_repository:
+    name: arc-theme
+    description: Horst3180's Home Project - arc theme(Fedora_24_standard)
+    baseurl: http://download.opensuse.org/repositories/home:/Horst3180/Fedora_24_standard/
+    gpgcheck: yes
+    gpgkey: http://download.opensuse.org/repositories/home:/Horst3180/Fedora_24_standard//repodata/repomd.xml.key
+    enabled: yes
+    file: arc-theme
+  when: ansible_distribution == 'Fedora' and ansible_distribution_version|int == 24
+
+- name: arc-theme install
+  package: pkg=arc-theme
+  when: ansible_distribution == 'Fedora' and ansible_distribution_version|int == 24
