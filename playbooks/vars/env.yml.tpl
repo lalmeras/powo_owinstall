@@ -19,7 +19,7 @@ powo_fullname: vagrant
 
 # override rdesktop -n option (needed in case of license issue)
 remote:
-    client_hostname: lalmeras10
+  client_hostname: vagrant10
 
 # override checksum / download url
 # add new distributions
