@@ -33,7 +33,10 @@ setup(
     entry_points={
         'console_scripts': [
             'powo_owinstall=powo_owinstall.cli:main'
-        ]
+        ],
+        'powo_plugin': {
+            'owinstall=powo_owinstall.plugin:powo_plugin'
+        }
     },
     include_package_data=True,
     install_requires=requirements,
