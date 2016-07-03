@@ -1,0 +1,46 @@
+- name: virtualbox repository keys
+  apt_key: id={{ item }} keyserver=keys.gnupg.net
+  when: ansible_distribution == 'Ubuntu'
+  with_items:
+    - 7B0FAB3A13B907435925D9C954422A4B98AB5139
+    - B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
+
+- name: virtualbox repository
+  apt_repository:
+    repo: deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} non-free contrib
+    state: present
+    filename: virtualbox
+  when: ansible_distribution == 'Ubuntu'
+
+- name: virtualbox repository keys
+  rpm_key:
+    key: "{{ item }}"
+    validate_certs: "{{ common.validate_ssl_certs }}"
+  with_items:
+    - https://www.virtualbox.org/download/oracle_vbox_2016.asc
+    - https://www.virtualbox.org/download/oracle_vbox.asc
+  when: ansible_distribution == 'Fedora'
+
+- name: virtualbox repository
+  yum_repository:
+    name: virtualbox
+    description: Virtualbox repository
+    baseurl: http://download.virtualbox.org/virtualbox/rpm/fedora/$releasever/$basearch
+    enabled: yes
+    file: virtualbox
+    gpgcheck: yes
+    gpgkey: http://www.virtualbox.org/download/oracle_vbox.asc
+  when: ansible_distribution == 'Fedora'
+
+- name: dkms installation
+  package: name=dkms state=present
+
+- name: virtualbox installation
+  package: name={{ item }} state=present
+  with_items: "{{ virtualbox.packages }}"
+
+- name: "{{ powo_user }} in group vboxusers"
+  user:
+      name: "{{ powo_user }}"
+      groups: vboxusers
+      append: yes

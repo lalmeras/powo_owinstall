@@ -1,0 +1,44 @@
+- name: cinnamon repository (trusty)
+  apt_repository:
+    repo: ppa:tsvetko.tsvetkov/cinnamon
+    filename: cinnamon
+    validate_certs: "{{ common.validate_ssl_certs }}"
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+
+- name: cinnamon repository (xenial)
+  apt_repository:
+    repo: ppa:embrosyn/cinnamon
+    filename: cinnamon
+    validate_certs: "{{ common.validate_ssl_certs }}"
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'xenial'
+
+- name: cinnamon installation
+  package: pkg={{ item }}
+  with_items: "{{ cinnamon.packages}}"
+  when: "{{ desktop.cinnamon.enabled }}"
+
+- include: ../include/gsettings.yml
+  vars:
+    schema: "{{ item.schema }}"
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_items: "{{ desktop.gsettings }}"
+  become: yes
+  become_user: "{{ powo_user }}"
+
+- name: calendar settings folder
+  file:
+    path: "{{ powo_home }}/.cinnamon/configs/calendar@cinnamon.org"
+    state: directory
+    mode: ugo+rwx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+
+- name: calendar settings
+  copy:
+    dest: "{{ powo_home }}/.cinnamon/configs/calendar@cinnamon.org/calendar@cinnamon.org.json"
+    src: ../files/calendar@cinnamon.org.json
+    force: yes
+    mode: ugo+rwx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"

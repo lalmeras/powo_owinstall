@@ -1,0 +1,21 @@
+mysql:
+  data_dir: /var/lib/mysql
+  packages:
+    - mysql-client
+    - mysql-server
+  service: mysql
+
+postgresql:
+  data_dir: /var/lib/postgresql
+  conf_dir: __OVERRIDE__
+  service: postgresql
+
+apache:
+  packages:
+    - apache2
+  service: apache2
+
+openssh:
+  packages:
+    - openssh-server
+    - openssh-client

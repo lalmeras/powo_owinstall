@@ -1,0 +1,24 @@
+- name: rdesktop install
+  package: pkg={{ item }}
+  with_items:
+      - rdesktop
+
+- name: rdesktop desktop file
+  template:
+    dest: "{{ powo_home }}/.local/share/applications/remote.desktop"
+    force: yes
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    src: ../files/remote-desktop.jinja
+
+- name: vim workaround
+  # if vim-common and vim-enhanced versions do not match, install fails
+  # https://bugzilla.redhat.com/show_bug.cgi?id=1329015
+  package:
+    name: vim-minimal
+    state: latest
+  when: ansible_distribution == 'Fedora'
+
+- name: misc install
+  package: pkg={{ item }}
+  with_items: "{{ misc.packages }}"

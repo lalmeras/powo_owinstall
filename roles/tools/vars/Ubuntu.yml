@@ -1,0 +1,29 @@
+virtualbox:
+  packages:
+    - virtualbox-5.0
+
+chromium:
+  packages:
+    - chromium-browser
+
+misc:
+  packages:
+    - vim
+    - gimp
+    - thunderbird
+    - thunderbird-gnome-support
+    - thunderbird-locale-fr
+    - subversion
+    - libsvn-java
+    - git
+    - libnotify-bin
+    - flashplugin-installer
+    - screen
+    - tmux
+    - tree
+    - dconf-tools
+    - pwgen
+    - ack-grep
+    - graphviz
+    - imagemagick
+    - cifs-utils

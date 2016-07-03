@@ -1,0 +1,23 @@
+- name: apache packages
+  package: pkg={{ item }}
+  with_items: "{{ apache.packages }}"
+
+- name: apache service
+  service: name={{ apache.service }} state=started enabled=true
+
+- name: apache modules
+  apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - proxy
+    - proxy_http
+    - proxy_ajp
+    - rewrite
+    - expires
+  when: ansible_distribution == 'Ubuntu'
+
+- name: php install
+  package: pkg={{ item }}
+  with_items: "{{ php.packages }}"
+  notify: apache restart

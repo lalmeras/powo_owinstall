@@ -1,0 +1,9 @@
+- name: postgresql restart
+  service:
+    name: "{{ postgresql.service }}"
+    state: restarted
+
+- name: apache restart
+  service:
+    name: "{{ apache.service }}"
+    state: restarted

@@ -1,0 +1,50 @@
+- include_vars: eclipse_item_vars.yml
+
+- name: prepare tools folder
+  file:
+    path: "{{ archive_destination_folder }}"
+    state: directory
+    mode: ugo+rwx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+
+- name: prepare apps folder
+  file:
+    path: "{{ install_destination }}"
+    state: directory
+    mode: ugo+rwx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+
+- name: prepare desktop folder
+  file:
+    path: "{{ powo_home }}/.local/share/applications"
+    state: directory
+    mode: ugo+rwx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+
+- name: download Eclipse
+  get_url:
+    url: "{{ distribution.url }}"
+    dest: "{{ archive_destination }}"
+    checksum: "{{ distribution.checksum }}"
+    validate_certs: "{{ common.validate_ssl_certs }}"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+  become_user: "{{ powo_user }}"
+
+# unarchive does not support tar strip
+- name: install Eclipse
+  command: tar -xzf "{{ archive_destination }}" -C "{{ install_destination }}" --strip 1
+  args:
+    creates: "{{ install_destination }}/eclipse"
+  become_user: "{{ powo_user }}"
+
+- name: eclipse desktop file
+  template:
+    dest: "{{ powo_home }}/.local/share/applications/{{ distribution.target_directory }}.desktop"
+    force: yes
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    src: ../files/eclipse-desktop.jinja

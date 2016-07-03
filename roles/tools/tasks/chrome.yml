@@ -1,0 +1,51 @@
+- name: google chrome repository
+  apt_repository:
+    repo: deb http://dl.google.com/linux/chrome/deb/ stable main
+    state: present
+    filename: google-chrome
+  when: ansible_distribution == 'Ubuntu' and ansible_architecture == 'x86_64'
+  register: t_ubuntu_chrome_repository
+
+- name: google chrome repository
+  yum_repository:
+    name: google-chrome
+    description: google-chrome
+    baseurl: http://dl.google.com/linux/chrome/rpm/stable/x86_64
+    enabled: yes
+    file: google-chrome
+    gpgcheck: yes
+    gpgkey: http://dl.google.com/linux/linux_signing_key.pub
+  when: ansible_distribution == 'Fedora' and ansible_architecture == 'x86_64'
+  register: t_fedora_chrome_repository
+
+- name: google chrome repository keys
+  apt_key:
+    url: https://dl.google.com/linux/linux_signing_key.pub
+    validate_certs: "{{ common.validate_ssl_certs }}"
+  when: "{{ not t_ubuntu_chrome_repository|skipped }}"
+
+- name: google chrome repository keys
+  apt_key: id=4CCA1EAF950CEE4AB83976DCA040830F7FAC5991 keyserver=keys.gnupg.net
+  when: "{{ not t_ubuntu_chrome_repository|skipped }}"
+
+- name: google chrome installation
+  debug: msg="google chrome is unsupported on x86 architecture ; use chromium"
+  when: "{{ t_ubuntu_chrome_repository|skipped and t_fedora_chrome_repository|skipped }}"
+
+- name: google chrome installation
+  package: name=google-chrome-stable state=present
+  when: not t_ubuntu_chrome_repository|skipped or not t_fedora_chrome_repository|skipped
+
+- name: chromium repository
+  yum_repository:
+    name: fedora-chromium-stable
+    description: Build of the stable tag of the Chromium Web Browser
+    baseurl: https://repos.fedorapeople.org/repos/spot/chromium-stable/fedora-$releasever/$basearch/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: http://repos.fedorapeople.org/repos/spot/chromium/spot.gpg
+  when: ansible_distribution == 'Fedora'
+
+- name: chromium installation
+  package: name={{ item }} state=present
+  with_items: "{{ chromium.packages }}"

@@ -1,0 +1,19 @@
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+
+- include: eclipse_item.yml
+  with_dict: "{{ eclipse.distributions }}"
+
+- include: jdk_item.yml
+  with_dict: "{{ jdk.distributions }}"
+
+- include: maven_item.yml
+  with_dict: "{{ maven.distributions }}"
+
+- include: tomcat_item.yml
+  with_dict: "{{ tomcat.distributions }}"
+
+- include: virtualbox.yml
+- include: chrome.yml
+- include: misc.yml

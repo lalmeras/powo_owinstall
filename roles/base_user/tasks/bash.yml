@@ -1,0 +1,47 @@
+- name: bashrc.d directory
+  file:
+    path: "{{ powo_home }}/.bashrc.d"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    state: directory
+
+- name: bashrc.d loading
+  blockinfile:
+    create: false
+    dest: "{{ powo_home }}/.bashrc"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    state: present
+    insertafter: EOF
+    block: |
+        if [ -d "$HOME/.bashrc.d" -a ls "$HOME/.bashrc.d/*.conf" 2&> /dev/null ]; then
+            . $HOME/.bashrc.d/*.conf
+        fi
+
+- name: profile.d directory
+  file:
+    path: "{{ powo_home }}/.profile.d"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    state: directory
+
+- name: profile.d loading
+  blockinfile:
+    create: yes
+    dest: "{{ powo_home }}/.profile"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    state: present
+    insertafter: EOF
+    block: |
+        if [ -d "$HOME/.profile.d" -a ls "$HOME/.profile.d/*.conf" 2&> /dev/null ]; then
+            . $HOME/.profile.d/*.conf
+        fi
+
+- name: profile.d/powo.conf
+  template:
+    dest: "{{ powo_home }}/.profile.d/powo.conf"
+    force: yes
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+    src: ../files/profile.d_powo.conf.jinja

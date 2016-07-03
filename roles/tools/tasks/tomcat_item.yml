@@ -1,0 +1,34 @@
+- include_vars: tomcat_item_vars.yml
+
+- name: prepare tools folder
+  file:
+    path: "{{ archive_destination_folder }}"
+    state: directory
+    mode: ugo+rwx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+
+- name: prepare apps folder
+  file:
+    path: "{{ install_destination }}"
+    state: directory
+    mode: ugo+rwx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+
+- name: download tomcat
+  get_url:
+    url: "{{ distribution.url }}"
+    dest: "{{ archive_destination }}"
+    checksum: "{{ distribution.checksum }}"
+    validate_certs: "{{ common.validate_ssl_certs }}"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_user }}"
+  become_user: "{{ powo_user }}"
+
+# unarchive does not support tar strip
+- name: install tomcat
+  command: tar -xzf "{{ archive_destination }}" -C "{{ install_destination }}" --strip 1
+  args:
+    creates: "{{ install_destination }}/bin/catalina.sh"
+  become_user: "{{ powo_user }}"

@@ -1,0 +1,12 @@
+gnome:
+  packages:
+    - ubuntu-gnome-desktop
+
+cinnamon:
+  packages:
+    - cinnamon
+    - python-lxml
+    - gir1.2-gnomedesktop-3.0
+    - gnome-icon-theme
+    - gnome-icon-theme-extras
+    - gnome-icon-theme-full

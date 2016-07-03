@@ -1,0 +1,22 @@
+---
+- name: check selinux current status
+  command: selinuxenabled
+  register: selinux_current_is_enabled
+  ignore_errors: yes
+
+- name: disable selinux
+  command: setenforce 0
+  when: "selinux_current_is_enabled|success"
+
+- name: check selinux reboot status
+  augeas:
+    command: match
+    path: "/files/etc/sysconfig/selinux/SELINUX"
+    value: 'enforcing'
+  register: selinux_reboot_is_enabled
+
+- name: disable selinux at reboot
+  augeas:
+    commands: |
+      set /files/etc/sysconfig/selinux/SELINUX 'disabled'
+  when: "selinux_reboot_is_enabled|length != 0"

@@ -1,0 +1,16 @@
+postgresql:
+  conf_dir: /etc/postgresql/9.5/main
+  packages:
+    - postgresql
+    - postgresql-client
+    - postgresql-contrib
+    - postgresql-postgis
+
+php:
+  packages:
+    - php
+    - php-mysql
+    - php-cli
+    - php-gd
+    - php-pgsql
+    - libapache2-mod-php
