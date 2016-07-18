@@ -8,9 +8,6 @@
   roles:
     # modules
     - paluh.augeas
-    - role: cchurch.virtualenv
-      virtualenv_path: /usr/local/powo/virtualenv
-      virtualenv_requirements: /etc/powo/requirements.txt
     # configurations
     - base
     - system

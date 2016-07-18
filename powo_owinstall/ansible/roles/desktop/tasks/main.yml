@@ -3,7 +3,10 @@
     - "{{ ansible_distribution }}.yml"
 
 - include: cinnamon.yml
+  when: desktop.cinnamon.enabled
+
 - include: gnome-desktop.yml
+  when: desktop.cinnamon.enabled
 
 - name: lightdm install
   package: pkg=lightdm

@@ -14,8 +14,7 @@
 
 - name: cinnamon installation
   package: pkg={{ item }}
-  with_items: "{{ cinnamon.packages}}"
-  when: "{{ desktop.cinnamon.enabled }}"
+  with_items: "{{ cinnamon.packages }}"
 
 - include: ../include/gsettings.yml
   vars:

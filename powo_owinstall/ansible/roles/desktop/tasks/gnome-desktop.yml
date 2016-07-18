@@ -3,7 +3,6 @@
   with_items:
       - "{{ gnome.packages }}"
       - gnome-tweak-tool
-  when: "{{ desktop.gnome.enabled }}"
 
 - name: arc-theme repository
   yum_repository:
