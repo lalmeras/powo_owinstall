@@ -11,7 +11,9 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
-    'powo>=0.1.0'
+    'powo>=0.1.0',
+    'passlib',
+    'python-augeas'
 ]
 
 test_requirements = [
