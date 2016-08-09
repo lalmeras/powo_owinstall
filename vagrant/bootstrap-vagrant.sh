@@ -19,7 +19,7 @@ if which dnf &> /dev/null; then
 fi
 
 venv_path=/opt/powo
-mkdir -p /opt
+mkdir -p $( dirname "$venv_path" )
 
 if [ ! -d "${venv_path}/bin" ]; then
 	virtualenv --system-site-packages ${venv_path}
@@ -28,15 +28,10 @@ fi
 
 . "${venv_path}/bin/activate"
 
-# installing powo from source or repository
-if [ -d "/vagrant/vagrant/dist/powo" ]; then
-	pip install --upgrade /vagrant/vagrant/dist/powo || echo "Ignoring missing pip package upgrade."
-	if ! pip show powo > /dev/null; then
-		echo "No available powo_owinstall package."
-		exit 1
-	fi
+# installing dependencies in dist from source
+for lib in $( ls /vagrant/vagrant/dist/*/setup.py ); do
+	pip install --upgrade "$( dirname "$lib" )"
+done
 
-fi
 pip install --upgrade /vagrant/
-
 powo -v -c /vagrant/vagrant/config/config.yml
