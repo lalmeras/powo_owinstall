@@ -9,3 +9,10 @@
     # quotes needed to disable boolean cast
     value: "yes"
 
+- name: openssh enables ssh-dss
+  augeas:
+    command: set
+    path: /files/etc/ssh/sshd_config/PubkeyAcceptedKeyTypes
+    value: "+ssh-dss"
+
+

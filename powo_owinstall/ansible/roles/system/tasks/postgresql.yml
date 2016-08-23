@@ -143,11 +143,42 @@
   notify: postgresql restart
   when: local_all_trust.result|length == 0 and local_all.result|length != 0
 
+- name: postgresql security (all/localhost)
+  augeas:
+      command: match
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32'][method='md5']"
+  register: localhost_all_md5
+
+- name: postgresql security (all/localhost)
+  augeas:
+      command: match
+      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32']"
+  register: localhost_all
+
+- name: postgresql security (all/localhost)
+  augeas:
+      commands: |
+          ins 01 after /files{{ postgresql.conf_dir }}/pg_hba.conf/*[type=\'host\'][last()]
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type host
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/address 127.0.0.1/32
+          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method md5
+  notify: postgresql restart
+  when: localhost_all_md5.result|length == 0 and localhost_all.result|length == 0
+
+- name: postgresql security (all/localhost)
+  augeas:
+      commands: |
+          set {{ localhost_all.result[0].label }}/method md5
+  notify: postgresql restart
+  when: localhost_all_md5.result|length == 0 and localhost_all.result|length != 0
+
 - name: postgresql security (all/network)
   augeas:
       command: match
       path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0'][method='md5']"
-  register: network_all_trust
+  register: network_all_md5
 
 - name: postgresql security (all/network)
   augeas:
@@ -165,11 +196,11 @@
           set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/address 0.0.0.0/0
           set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method md5
   notify: postgresql restart
-  when: network_all_trust.result|length == 0 and network_all.result|length == 0
+  when: network_all_md5.result|length == 0 and network_all.result|length == 0
 
 - name: postgresql security (all/network)
   augeas:
       commands: |
           set {{ network_all.result[0].label }}/method md5
   notify: postgresql restart
-  when: network_all_trust.result|length == 0 and network_all.result|length != 0
+  when: network_all_md5.result|length == 0 and network_all.result|length != 0
