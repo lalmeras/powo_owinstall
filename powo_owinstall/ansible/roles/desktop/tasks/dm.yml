@@ -1,0 +1,24 @@
+- block:
+  - name: install lightdm
+    package: name=lightdm
+
+  - name: enable lightdm
+    service:
+      name: lightdm
+      state: started
+      enabled: yes
+
+  when: ansible_distribution == 'Ubuntu'
+
+
+- block:
+  - name: install gdm
+    package: name=gdm
+
+  - name: enable gdm
+    service:
+      name: gdm
+      state: started
+      enabled: yes
+
+  when: ansible_distribution == 'Fedora'

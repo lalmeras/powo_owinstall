@@ -15,36 +15,39 @@
     state: started
     enabled: yes
 
-- name: "{{ postgresql.data_dir }} symlink"
-  file:
-      path: "{{ postgresql.data_dir }}"
-      state: link
-      src: "{{ postgresql.data_services_dir }}"
-  ignore_errors: true
-  register: var_postgresql_link
-
 - block:
-    - name: stopping postgresql
-      service: name={{ postgresql.service }} state=stopped
-
-    - name: checking {{ postgresql.data_services_dir }}
-      stat: path={{ postgresql.data_services_dir }}
-      register: data_postgresql
-
-    - name: backup existing {{ postgresql.data_services_dir }}
-      command: mv {{ postgresql.data_services_dir }} {{ postgresql.data_services_dir }}.back
-      when: "{{ data_postgresql.stat.exists }}"
-
-    - name: moving {{ postgresql.data_dir }} to {{ postgresql.data_services_dir }}
-      command: mv "{{ postgresql.data_dir }}" "{{ postgresql.data_services_dir }}"
-
-  when: "{{ var_postgresql_link.state == 'directory' }}"
-
-- name: "{{ postgresql.data_dir }} symlink"
-  file:
-      path: "{{ postgresql.data_dir }}"
-      state: link
-      src: "{{ postgresql.data_services_dir }}"
+  - name: "{{ postgresql.data_dir }} symlink"
+    file:
+        path: "{{ postgresql.data_dir }}"
+        state: link
+        src: "{{ postgresql.data_services_dir }}"
+    ignore_errors: true
+    register: var_postgresql_link
+  
+  - block:
+      - name: stopping postgresql
+        service: name={{ postgresql.service }} state=stopped
+  
+      - name: checking {{ postgresql.data_services_dir }}
+        stat: path={{ postgresql.data_services_dir }}
+        register: data_postgresql
+  
+      - name: backup existing {{ postgresql.data_services_dir }}
+        command: mv {{ postgresql.data_services_dir }} {{ postgresql.data_services_dir }}.back
+        when: "{{ data_postgresql.stat.exists }}"
+  
+      - name: moving {{ postgresql.data_dir }} to {{ postgresql.data_services_dir }}
+        command: mv "{{ postgresql.data_dir }}" "{{ postgresql.data_services_dir }}"
+  
+    when: "{{ var_postgresql_link.state == 'directory' }}"
+  
+  - name: "{{ postgresql.data_dir }} symlink"
+    file:
+        path: "{{ postgresql.data_dir }}"
+        state: link
+        src: "{{ postgresql.data_services_dir }}"
+  
+  when: modules.postgresql.switch_data.enabled | default(False)
 
 - name: starting postgresql
   service: name={{ postgresql.service }} state=started
@@ -56,151 +59,155 @@
       sysctl_file: /etc/sysctl.d/30-postgresql-shm.conf
       value: 500000000
   notify: postgresql restart
+  when: modules.postgresql.shared_memory.enabled | default(False)
 
-- name: postgresql network
-  augeas:
-      command: match
-      path: /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses[ . = '*' ]
-  register: listen_addresses
+- block:
+  - name: postgresql network
+    augeas:
+        command: match
+        path: /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses[ . = '*' ]
+    register: listen_addresses
+  
+  - name: postgresql network
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/postgresql.conf/#comment[ . =~ regexp('.*listen_addresses.=..*') ]"
+    register: listen_addresses_comment
+  
+  - name: postgresql network
+    augeas:
+        commands: set /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses *
+    notify: postgresql restart
+    when: listen_addresses.result|length == 0 and listen_addresses_comment.result|length == 0
+  
+  - name: postgresql network
+    augeas:
+        commands: |
+            ins listen_addresses before {{ listen_addresses_comment.result[0].label }}
+            set /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses *
+    notify: postgresql restart
+    when: listen_addresses.result|length == 0 and listen_addresses_comment.result|length != 0
+  
+  - name: postgresql security (postgres/local)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres'][method='trust']"
+    register: local_postgres_trust
+  
+  - name: postgresql security (postgres/local)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres']"
+    register: local_postgres
+  
+  - name: postgresql security (postgres/local)
+    augeas:
+        commands: |
+            ins 01 before /files{{ postgresql.conf_dir }}/pg_hba.conf/1
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type local
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user postgres
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method trust
+    notify: postgresql restart
+    when: local_postgres_trust.result|length == 0 and local_postgres.result|length == 0
+  
+  - name: postgresql security (postgres/local)
+    augeas:
+        commands: |
+            set {{ local_postgres.result[0].label }}/method trust
+    notify: postgresql restart
+    when: local_postgres_trust.result|length == 0 and local_postgres.result|length != 0
+  
+  - name: postgresql security (all/local)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all'][method='trust']"
+    register: local_all_trust
+  
+  - name: postgresql security (all/local)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all']"
+    register: local_all
+  
+  - name: postgresql security (all/local)
+    augeas:
+        commands: |
+            ins 01 before /files{{ postgresql.conf_dir }}/pg_hba.conf/1
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type local
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method trust
+    notify: postgresql restart
+    when: local_all_trust.result|length == 0 and local_all.result|length == 0
+  
+  - name: postgresql security (all/local)
+    augeas:
+        commands: |
+            set {{ local_all.result[0].label }}/method trust
+    notify: postgresql restart
+    when: local_all_trust.result|length == 0 and local_all.result|length != 0
+  
+  - name: postgresql security (all/localhost)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32'][method='md5']"
+    register: localhost_all_md5
+  
+  - name: postgresql security (all/localhost)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32']"
+    register: localhost_all
+  
+  - name: postgresql security (all/localhost)
+    augeas:
+        commands: |
+            ins 01 after /files{{ postgresql.conf_dir }}/pg_hba.conf/*[type=\'host\'][last()]
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type host
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/address 127.0.0.1/32
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method md5
+    notify: postgresql restart
+    when: localhost_all_md5.result|length == 0 and localhost_all.result|length == 0
+  
+  - name: postgresql security (all/localhost)
+    augeas:
+        commands: |
+            set {{ localhost_all.result[0].label }}/method md5
+    notify: postgresql restart
+    when: localhost_all_md5.result|length == 0 and localhost_all.result|length != 0
+  
+  - name: postgresql security (all/network)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0'][method='md5']"
+    register: network_all_md5
+  
+  - name: postgresql security (all/network)
+    augeas:
+        command: match
+        path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0']"
+    register: network_all
+  
+  - name: postgresql security (all/network)
+    augeas:
+        commands: |
+            ins 01 after /files{{ postgresql.conf_dir }}/pg_hba.conf/*[type=\'host\'][last()]
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type host
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/address 0.0.0.0/0
+            set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method md5
+    notify: postgresql restart
+    when: network_all_md5.result|length == 0 and network_all.result|length == 0
+  
+  - name: postgresql security (all/network)
+    augeas:
+        commands: |
+            set {{ network_all.result[0].label }}/method md5
+    notify: postgresql restart
+    when: network_all_md5.result|length == 0 and network_all.result|length != 0
 
-- name: postgresql network
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/postgresql.conf/#comment[ . =~ regexp('.*listen_addresses.=..*') ]"
-  register: listen_addresses_comment
-
-- name: postgresql network
-  augeas:
-      commands: set /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses *
-  notify: postgresql restart
-  when: listen_addresses.result|length == 0 and listen_addresses_comment.result|length == 0
-
-- name: postgresql network
-  augeas:
-      commands: |
-          ins listen_addresses before {{ listen_addresses_comment.result[0].label }}
-          set /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses *
-  notify: postgresql restart
-  when: listen_addresses.result|length == 0 and listen_addresses_comment.result|length != 0
-
-- name: postgresql security (postgres/local)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres'][method='trust']"
-  register: local_postgres_trust
-
-- name: postgresql security (postgres/local)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres']"
-  register: local_postgres
-
-- name: postgresql security (postgres/local)
-  augeas:
-      commands: |
-          ins 01 before /files{{ postgresql.conf_dir }}/pg_hba.conf/1
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type local
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user postgres
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method trust
-  notify: postgresql restart
-  when: local_postgres_trust.result|length == 0 and local_postgres.result|length == 0
-
-- name: postgresql security (postgres/local)
-  augeas:
-      commands: |
-          set {{ local_postgres.result[0].label }}/method trust
-  notify: postgresql restart
-  when: local_postgres_trust.result|length == 0 and local_postgres.result|length != 0
-
-- name: postgresql security (all/local)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all'][method='trust']"
-  register: local_all_trust
-
-- name: postgresql security (all/local)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all']"
-  register: local_all
-
-- name: postgresql security (all/local)
-  augeas:
-      commands: |
-          ins 01 before /files{{ postgresql.conf_dir }}/pg_hba.conf/1
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type local
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method trust
-  notify: postgresql restart
-  when: local_all_trust.result|length == 0 and local_all.result|length == 0
-
-- name: postgresql security (all/local)
-  augeas:
-      commands: |
-          set {{ local_all.result[0].label }}/method trust
-  notify: postgresql restart
-  when: local_all_trust.result|length == 0 and local_all.result|length != 0
-
-- name: postgresql security (all/localhost)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32'][method='md5']"
-  register: localhost_all_md5
-
-- name: postgresql security (all/localhost)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32']"
-  register: localhost_all
-
-- name: postgresql security (all/localhost)
-  augeas:
-      commands: |
-          ins 01 after /files{{ postgresql.conf_dir }}/pg_hba.conf/*[type=\'host\'][last()]
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type host
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/address 127.0.0.1/32
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method md5
-  notify: postgresql restart
-  when: localhost_all_md5.result|length == 0 and localhost_all.result|length == 0
-
-- name: postgresql security (all/localhost)
-  augeas:
-      commands: |
-          set {{ localhost_all.result[0].label }}/method md5
-  notify: postgresql restart
-  when: localhost_all_md5.result|length == 0 and localhost_all.result|length != 0
-
-- name: postgresql security (all/network)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0'][method='md5']"
-  register: network_all_md5
-
-- name: postgresql security (all/network)
-  augeas:
-      command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0']"
-  register: network_all
-
-- name: postgresql security (all/network)
-  augeas:
-      commands: |
-          ins 01 after /files{{ postgresql.conf_dir }}/pg_hba.conf/*[type=\'host\'][last()]
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/type host
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/database all
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/user all
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/address 0.0.0.0/0
-          set /files{{ postgresql.conf_dir }}/pg_hba.conf/01/method md5
-  notify: postgresql restart
-  when: network_all_md5.result|length == 0 and network_all.result|length == 0
-
-- name: postgresql security (all/network)
-  augeas:
-      commands: |
-          set {{ network_all.result[0].label }}/method md5
-  notify: postgresql restart
-  when: network_all_md5.result|length == 0 and network_all.result|length != 0
+  when: modules.postgresql.security.enabled | default(False)

@@ -13,18 +13,25 @@
   file: path=/etc/udev/rules.d/70-persistent-net.rules state=absent
 
 - include: apparmor_disabled.yml
-  when: "{{ ansible_distribution == 'Ubuntu' }}"
+  when: modules.disable_security.enabled | default(False) and ansible_distribution == 'Ubuntu'
 - include: selinux_disabled.yml
-  when: "{{ ansible_distribution == 'Fedora' }}"
+  when: modules.disable_security.enabled | default(False) and ansible_distribution == 'Fedora'
 - include: mountpoints.yml
+  when: modules.mountpoints.enabled | default(False)
 - include: data_services.yml
+  when: modules.data_services.enabled | default(False)
 - include: mysql.yml
+  when: modules.mysql.enabled | default(False)
 - include: postgresql.yml
+  when: modules.postgresql.enabled | default(False)
 - include: apache.yml
+  when: modules.apache.enabled | default(False)
 - include: openssh.yml
+  when: modules.openssh.enabled | default(False)
 
 - name: misc servers
   package: pkg={{ item }}
   with_items:
     - memcached
+  when: modules.memcached.enabled | default(False)
 

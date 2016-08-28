@@ -2,11 +2,10 @@
   with_first_found:
     - "{{ ansible_distribution }}.yml"
 
+- include: dm.yml
+
 - include: cinnamon.yml
-  when: desktop.cinnamon.enabled
+  when: modules.cinnamon.enabled | default(False)
 
 - include: gnome-desktop.yml
-  when: desktop.cinnamon.enabled
-
-- name: lightdm install
-  package: pkg=lightdm
+  when: modules.gnome.enabled | default(False)

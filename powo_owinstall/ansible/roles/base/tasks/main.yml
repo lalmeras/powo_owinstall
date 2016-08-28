@@ -3,6 +3,7 @@
     - "{{ ansible_distribution }}.yml"
 
 - include: python-package.yml
+- include: fedora-cloud-workaround.yml
 
 - name: libaugeas install
   package: pkg={{ item }}

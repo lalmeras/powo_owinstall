@@ -4,16 +4,23 @@
 
 - include: eclipse_item.yml
   with_dict: "{{ eclipse.distributions }}"
+  when: modules.eclipse.enabled | default(False)
 
 - include: jdk_item.yml
   with_dict: "{{ jdk.distributions }}"
+  when: modules.jdk.enabled | default(False)
 
 - include: maven_item.yml
   with_dict: "{{ maven.distributions }}"
+  when: modules.maven.enabled | default(False)
 
 - include: tomcat_item.yml
   with_dict: "{{ tomcat.distributions }}"
+  when: modules.tomcat.enabled | default(False)
 
 - include: virtualbox.yml
+  when: modules.virtualbox.enabled | default(False)
 - include: chrome.yml
+  when: modules.chrome.enabled | default(False)
 - include: misc.yml
+  when: modules.misc.enabled | default(False)

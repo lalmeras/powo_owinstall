@@ -8,11 +8,13 @@
     path: /files/etc/ssh/sshd_config/PermitRootLogin
     # quotes needed to disable boolean cast
     value: "yes"
+  when: modules.openssh.root_login.enabled
 
 - name: openssh enables ssh-dss
   augeas:
     command: set
     path: /files/etc/ssh/sshd_config/PubkeyAcceptedKeyTypes
     value: "+ssh-dss"
+  when: modules.openssh.dsa_pub.enabled
 
 

@@ -1,3 +1,56 @@
+modules:
+    user:
+        enabled: true
+        switch_home:
+            enabled: true
+    bash_config:
+        enabled: true
+    postgresql:
+        enabled: true
+        security:
+            enabled: true
+        shared_memory:
+            enabled: true
+        switch_data:
+            enabled: true
+    memcached: true
+    openssh:
+        enabled: true
+        root_login:
+            enabled: true
+        dsa_pub:
+            enabled: true
+    apache:
+        enabled: true
+    mysql:
+        enabled: true
+        switch_data:
+            enabled: true
+    mountpoints:
+        enabled: true
+    disable_security:
+        enabled: true
+    data_services:
+        enabled: true
+    misc:
+        enabled: true
+    chrome:
+        enabled: true
+    virtualbox:
+        enabled: true
+    tomcat:
+        enabled: true
+    maven:
+        enabled: true
+    jdk:
+        enabled: true
+    eclipse:
+        enabled: true
+    cinnamon:
+        enabled: true
+    gnome:
+        enabled: true
+
 powo_password: "{{ lookup('env', 'POWO_PASSWORD') }}"
 powo_passphrase: "{{ lookup('env', 'POWO_PASSPHRASE') }}"
 

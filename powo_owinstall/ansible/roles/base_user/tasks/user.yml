@@ -1,0 +1,36 @@
+- block:
+  - name: "{{ powo_user }} user creation"
+    user:
+        name: "{{ powo_user }}"
+        shell: /bin/bash
+        groups: "{{ user.groups }}"
+        append: yes
+        comment: "{{ powo_fullname }}"
+        createhome: yes
+        generate_ssh_key: yes
+        ssh_key_passphrase: "{{ powo_passphrase }}"
+        password: "{{ powo_password }}"
+        update_password: on_create
+  
+  - block:
+    - name: check home symlink
+      file:
+          path: /home
+          state: link
+          src: /data/home
+      ignore_errors: yes
+      register: home_link
+    
+    - name: home move
+      command: mv -t /data /home
+      when: "{{ home_link.state == 'directory' }}"
+    
+    - name: home symlink
+      file:
+          path: /home
+          state: link
+          src: /data/home
+
+    when: modules.user.switch_home.enabled | default(False)
+
+  when: modules.user.enabled | default(False)

@@ -1,0 +1,16 @@
+- block:
+  - name: enable systemd-remount-fs
+    service:
+      name: systemd-remount-fs
+      state: started
+
+  - name: enable systemd-remount-fs
+    service:
+      name: systemd-remount-fs
+      state: started
+      enabled: yes
+
+  when: ansible_distribution == 'Fedora'
+
+
+
