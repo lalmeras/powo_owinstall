@@ -30,8 +30,8 @@ fi
 
 # installing dependencies in dist from source
 for lib in $( ls /vagrant/vagrant/dist/*/setup.py ); do
-	pip install --upgrade "$( dirname "$lib" )"
+	pip install --editable "$( dirname "$lib" )"
 done
 
-pip install --upgrade /vagrant/
-powo -v -c /vagrant/vagrant/config/config.yml
+pip install --editable /vagrant/
+powo -v -c /vagrant/vagrant/config/config.yml update
