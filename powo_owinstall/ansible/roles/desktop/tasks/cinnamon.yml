@@ -22,7 +22,6 @@
     key: "{{ item.key }}"
     value: "{{ item.value }}"
   with_items: "{{ desktop.gsettings }}"
-  become: yes
   become_user: "{{ powo_user }}"
 
 - name: calendar settings folder

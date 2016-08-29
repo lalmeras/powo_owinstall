@@ -48,3 +48,4 @@
       src: ../files/bash_profile.d_powo.conf.jinja
   
   when: modules.bash_config.enabled | default(False)
+  become_user: "{{ powo_user }}"

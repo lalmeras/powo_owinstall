@@ -3,6 +3,8 @@ modules:
         enabled: true
         switch_home:
             enabled: true
+        keygen:
+            enabled: true
     bash_config:
         enabled: true
     postgresql:
