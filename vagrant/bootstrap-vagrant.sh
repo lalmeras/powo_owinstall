@@ -5,8 +5,14 @@ if [ -f /vagrant/vagrant/env.sh ]; then
 	. /vagrant/vagrant/env.sh
 fi
 if [ -d /vagrant/vagrant/certs ]; then
-	find /vagrant/vagrant/certs -name "*.pem" -type f -exec cp {} /etc/pki/ca-trust/source/anchors/ \;
-	update-ca-trust
+	if [ -d /etc/pki/ca-trust/source/anchors ]; then
+		find /vagrant/vagrant/certs -name "*.pem" -type f -exec cp {} /etc/pki/ca-trust/source/anchors/ \;
+	elif [ -d /usr/local/share/ca-certificates ]; then
+		rename_util=$( which rename.ul || which rename )
+		$rename_util .pem .crt /vagrant/vagrant/certs/*.pem
+		find /vagrant/vagrant/certs -name "*.crt" -type f -exec cp {} /usr/local/share/ca-certificates/ \;
+	fi
+	(which update-ca-trust && update-ca-trust) || (which update-ca-certificates && update-ca-certificates)
 fi
 
 if which apt-get &> /dev/null; then
