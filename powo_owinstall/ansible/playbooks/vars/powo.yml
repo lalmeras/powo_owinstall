@@ -57,13 +57,7 @@ powo_password: "{{ lookup('env', 'POWO_PASSWORD') }}"
 powo_passphrase: "{{ lookup('env', 'POWO_PASSPHRASE') }}"
 
 common:
-    validate_ssl_certs: true
-
-desktop:
-    cinnamon:
-        enabled: false
-    gnome:
-        enabled: false
+    validate_ssl_certs: false
 
 eclipse:
     distributions:
