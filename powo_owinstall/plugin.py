@@ -33,7 +33,11 @@ def powo_plugin():
 def on_run(click_ctx, play, variable_manager, loader):
     vars = variable_manager.get_vars(loader, play=play)
     templar = ansible.template.Templar(loader=loader, variables=vars)
-    powo_user = get_var(templar, vars, 'powo_user')
+    if click_ctx.params['ow_username']:
+        powo_user = click_ctx.params['ow_username']
+        _update_extra_vars(variable_manager, 'powo_user', powo_user)
+    else:
+        powo_user = get_var(templar, vars, 'powo_user')
     # enforce valid username
     while not validate_username(powo_user):
         if not sys.stdin.isatty():
@@ -56,8 +60,10 @@ def on_run(click_ctx, play, variable_manager, loader):
     if pass_needed:
         powo_password = get_var(templar, vars, 'powo_password')
         if not powo_password:
-            raise click.ClickException('powo_password not found and terminal'
-                                       'is not interactive')
+            if not sys.stdin.isatty():
+                raise click.ClickException(
+                    'powo_password not found and terminal'
+                    'is not interactive')
             powo_password = \
                 click.prompt(
                     'Please provide a password for user %s ; '
@@ -65,6 +71,9 @@ def on_run(click_ctx, play, variable_manager, loader):
                     type=click.STRING, hide_input=True,
                     confirmation_prompt=True)
             _update_extra_vars(variable_manager, 'powo_password', powo_password)
+    if click_ctx.params['ow_fullname']:
+        _update_extra_vars(variable_manager, 'powo_fullname',
+                           click_ctx.params['ow_fullname'])
     if click_ctx.params['ow_ask_ssh_passphrase']:
         powo_passphrase = get_var(templar, vars, 'powo_passphrase')
         if powo_passphrase:
@@ -108,6 +117,9 @@ def _update_extra_vars(variable_manager, key, value):
 def decorate_update(update):
     click.option('--ow-username', default=None,
                  help='user account to manage (default from configuration file)'
+                 )(update)
+    click.option('--ow-fullname', default=None,
+                 help='user full name'
                  )(update)
     click.option('--ow-ask-ssh-passphrase', is_flag=True, default=False,
                  help='ssh key passphrase (only for generation)'
