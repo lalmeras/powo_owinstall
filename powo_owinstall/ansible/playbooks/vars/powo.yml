@@ -68,6 +68,13 @@ eclipse:
             checksum: __CHECKSUM__
             desktop_name: Eclipse 4.5
 
+        owsi-4.5.2-x86_64:
+            target_filename: owsi-eclipse-jee-mars-4.5.2-linux-gtk-x86_64.tar.gz
+            target_directory: owsi-eclipse-jee-mars-4.5.2-linux-gtk-x86_64
+            url: __DOWNLOAD_URL__
+            checksum: __CHECKSUM__
+            desktop_name: Eclipse 4.5.2
+
 jdk:
     distributions:
         1.7.71-x86_64:
@@ -83,6 +90,12 @@ maven:
             target_directory: apache-maven-3.2.1
             url: __DOWNLOAD_URL__
             checksum: md5:aaef971206104e04e21a3b580d9634fe
+
+        3.3.9:
+            target_filename: apache-maven-3.3.9-bin.tar.gz
+            target_directory: apache-maven-3.3.9
+            url: __DOWNLOAD_URL__
+            checksum: md5:516923b3955b6035ba6b0a5b031fbd8b
 
 tomcat:
     distributions:
