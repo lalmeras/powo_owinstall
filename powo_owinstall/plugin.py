@@ -66,7 +66,7 @@ def on_run(click_ctx, play, variable_manager, loader):
                     'is not interactive')
             powo_password = \
                 click.prompt(
-                    'Please provide a password for user %s ; '
+                    'Please provide a password for user %s'
                     % (powo_user),
                     type=click.STRING, hide_input=True,
                     confirmation_prompt=True)
