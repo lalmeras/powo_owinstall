@@ -3,3 +3,4 @@ packages:
   augeas:
     - libaugeas0
     - augeas-tools
+    - python-augeas
