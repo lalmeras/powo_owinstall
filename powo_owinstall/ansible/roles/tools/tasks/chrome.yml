@@ -1,3 +1,7 @@
+- name: google chrome repository keys
+  apt_key: id=4CCA1EAF950CEE4AB83976DCA040830F7FAC5991 keyserver=keys.gnupg.net
+  when: ansible_distribution == 'Ubuntu' and ansible_architecture == 'x86_64'
+
 - name: google chrome repository
   apt_repository:
     repo: deb http://dl.google.com/linux/chrome/deb/ stable main
@@ -17,16 +21,6 @@
     gpgkey: http://dl.google.com/linux/linux_signing_key.pub
   when: ansible_distribution == 'Fedora' and ansible_architecture == 'x86_64'
   register: t_fedora_chrome_repository
-
-- name: google chrome repository keys
-  apt_key:
-    url: https://dl.google.com/linux/linux_signing_key.pub
-    validate_certs: "{{ common.validate_ssl_certs }}"
-  when: "{{ not t_ubuntu_chrome_repository|skipped }}"
-
-- name: google chrome repository keys
-  apt_key: id=4CCA1EAF950CEE4AB83976DCA040830F7FAC5991 keyserver=keys.gnupg.net
-  when: "{{ not t_ubuntu_chrome_repository|skipped }}"
 
 - name: google chrome installation
   debug: msg="google chrome is unsupported on x86 architecture ; use chromium"
