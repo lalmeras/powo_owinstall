@@ -28,7 +28,7 @@
   file:
     path: "{{ powo_home }}/.cinnamon/configs/calendar@cinnamon.org"
     state: directory
-    mode: ugo+rwx
+    mode: u=rwx,g=rwx,o=rx
     owner: "{{ powo_user }}"
     group: "{{ powo_user }}"
 
@@ -37,6 +37,6 @@
     dest: "{{ powo_home }}/.cinnamon/configs/calendar@cinnamon.org/calendar@cinnamon.org.json"
     src: ../files/calendar@cinnamon.org.json
     force: yes
-    mode: ugo+rwx
+    mode: u=rw,g=rw,o=r
     owner: "{{ powo_user }}"
     group: "{{ powo_user }}"

@@ -45,21 +45,21 @@
   - block:
     - name: check home symlink
       file:
-          path: /home
-          state: link
-          src: /data/home
+        path: /home
+        state: link
+        src: /data/home
       ignore_errors: yes
       register: home_link
-    
+
     - name: home move
       command: mv -t /data /home
       when: "{{ home_link.state == 'directory' }}"
-    
+
     - name: home symlink
       file:
-          path: /home
-          state: link
-          src: /data/home
+        path: /home
+        state: link
+        src: /data/home
 
     when: modules.user.switch_home.enabled | default(False)
 

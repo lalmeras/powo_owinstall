@@ -4,7 +4,7 @@
   file:
     path: "{{ archive_destination_folder }}"
     state: directory
-    mode: ugo+rwx
+    mode: u=rwx,g=rwx,o=rx
     owner: "{{ powo_user }}"
     group: "{{ powo_user }}"
 
@@ -12,7 +12,7 @@
   file:
     path: "{{ install_destination }}"
     state: directory
-    mode: ugo+rwx
+    mode: u=rwx,g=rwx,o=rx
     owner: "{{ powo_user }}"
     group: "{{ powo_user }}"
 

@@ -4,6 +4,7 @@
       path: "{{ powo_home }}/.bashrc.d"
       owner: "{{ powo_user }}"
       group: "{{ powo_user }}"
+      mode: u=rwx,g=rwx,o=rx
       state: directory
   
   - name: bashrc.d loading
@@ -12,10 +13,11 @@
       dest: "{{ powo_home }}/.bashrc"
       owner: "{{ powo_user }}"
       group: "{{ powo_user }}"
+      mode: u=rw,g=rw,o=r
       state: present
       insertafter: EOF
       block: |
-          if [ -d "$HOME/.bashrc.d" -a ls "$HOME/.bashrc.d/*.conf" 2&> /dev/null ]; then
+          if [ -d "$HOME/.bashrc.d" -a $( find "$HOME/.bashrc.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
               . $HOME/.bashrc.d/*.conf
           fi
   
@@ -24,6 +26,7 @@
       path: "{{ powo_home }}/.bash_profile.d"
       owner: "{{ powo_user }}"
       group: "{{ powo_user }}"
+      mode: u=rwx,g=rwx,o=rx
       state: directory
   
   - name: bash_profile.d loading
@@ -32,10 +35,11 @@
       dest: "{{ powo_home }}/.bash_profile"
       owner: "{{ powo_user }}"
       group: "{{ powo_user }}"
+      mode: u=rw,g=rw,o=r
       state: present
       insertafter: EOF
       block: |
-          if [ -d "$HOME/.bash_profile.d" -a ls "$HOME/.bash_profile.d/"*.conf 2&> /dev/null ]; then
+          if [ -d "$HOME/.bash_profile.d" -a $( find "$HOME/.bash_profile.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
               . $HOME/.bash_profile.d/*.conf
           fi
   
@@ -45,6 +49,7 @@
       force: yes
       owner: "{{ powo_user }}"
       group: "{{ powo_user }}"
+      mode: u=rw,g=rw,o=r
       src: ../files/bash_profile.d_powo.conf.jinja
   
   when: modules.bash_config.enabled | default(False)

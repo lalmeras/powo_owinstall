@@ -3,6 +3,6 @@
   file:
     path: /data/services
     state: directory
-    mode: ugo+rwx
+    mode: u=rwx,g=rwx,o=rwx
     owner: root
     group: root
