@@ -3,7 +3,7 @@
     file:
       path: "{{ powo_home }}/.bashrc.d"
       owner: "{{ powo_user }}"
-      group: "{{ powo_user }}"
+      group: "{{ powo_group }}"
       mode: u=rwx,g=rwx,o=rx
       state: directory
   
@@ -12,7 +12,7 @@
       create: false
       dest: "{{ powo_home }}/.bashrc"
       owner: "{{ powo_user }}"
-      group: "{{ powo_user }}"
+      group: "{{ powo_group }}"
       mode: u=rw,g=rw,o=r
       state: present
       insertafter: EOF
@@ -25,7 +25,7 @@
     file:
       path: "{{ powo_home }}/.bash_profile.d"
       owner: "{{ powo_user }}"
-      group: "{{ powo_user }}"
+      group: "{{ powo_group }}"
       mode: u=rwx,g=rwx,o=rx
       state: directory
   
@@ -34,7 +34,7 @@
       create: yes
       dest: "{{ powo_home }}/.bash_profile"
       owner: "{{ powo_user }}"
-      group: "{{ powo_user }}"
+      group: "{{ powo_group }}"
       mode: u=rw,g=rw,o=r
       state: present
       insertafter: EOF
@@ -48,7 +48,7 @@
       dest: "{{ powo_home }}/.bash_profile.d/powo.conf"
       force: yes
       owner: "{{ powo_user }}"
-      group: "{{ powo_user }}"
+      group: "{{ powo_group }}"
       mode: u=rw,g=rw,o=r
       src: ../files/bash_profile.d_powo.conf.jinja
   

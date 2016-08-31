@@ -16,7 +16,7 @@
         path: "{{ powo_home }}/.ssh"
         state: directory
         owner: "{{ powo_user }}"
-        group: "{{ powo_user }}"
+        group: "{{ powo_group }}"
         mode: u=rwx,g=,o=
 
     - name: .ssh/id_rsa check

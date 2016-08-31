@@ -30,7 +30,7 @@
     state: directory
     mode: u=rwx,g=rwx,o=rx
     owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
+    group: "{{ powo_group }}"
 
 - name: calendar settings
   copy:
@@ -39,4 +39,4 @@
     force: yes
     mode: u=rw,g=rw,o=r
     owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
+    group: "{{ powo_group }}"

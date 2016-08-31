@@ -6,7 +6,7 @@
     state: directory
     mode: u=rwx,g=rwx,o=rx
     owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
+    group: "{{ powo_group }}"
 
 - name: prepare apps folder
   file:
@@ -14,7 +14,7 @@
     state: directory
     mode: u=rwx,g=rwx,o=rx
     owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
+    group: "{{ powo_group }}"
 
 - name: download jdk
   get_url:
@@ -23,7 +23,7 @@
     checksum: "{{ distribution.checksum }}"
     validate_certs: "{{ common.validate_ssl_certs }}"
     owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
+    group: "{{ powo_group }}"
   become_user: "{{ powo_user }}"
 
 # unarchive does not support tar strip

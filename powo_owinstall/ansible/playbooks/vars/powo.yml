@@ -53,6 +53,7 @@ modules:
     gnome:
         enabled: true
 
+powo_group: "{{ powo_user }}"
 powo_password: "{{ lookup('env', 'POWO_PASSWORD') }}"
 powo_passphrase: "{{ lookup('env', 'POWO_PASSPHRASE') }}"
 

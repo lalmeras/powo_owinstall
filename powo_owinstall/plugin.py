@@ -74,6 +74,9 @@ def on_run(click_ctx, play, variable_manager, loader):
     if click_ctx.params['ow_fullname']:
         _update_extra_vars(variable_manager, 'powo_fullname',
                            click_ctx.params['ow_fullname'])
+    if click_ctx.params['ow_group']:
+        _update_extra_vars(variable_manager, 'powo_group',
+                           click_ctx.params['ow_group'])
     if click_ctx.params['ow_ask_ssh_passphrase']:
         powo_passphrase = get_var(templar, vars, 'powo_passphrase')
         if powo_passphrase:
@@ -117,6 +120,9 @@ def _update_extra_vars(variable_manager, key, value):
 def decorate_update(update):
     click.option('--ow-username', default=None,
                  help='user account to manage (default from configuration file)'
+                 )(update)
+    click.option('--ow-group', default=None,
+                 help='user group (used for files'' mode, username by default)'
                  )(update)
     click.option('--ow-fullname', default=None,
                  help='user full name'

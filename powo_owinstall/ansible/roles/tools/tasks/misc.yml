@@ -8,7 +8,7 @@
     dest: "{{ powo_home }}/.local/share/applications/remote.desktop"
     force: yes
     owner: "{{ powo_user }}"
-    group: "{{ powo_user }}"
+    group: "{{ powo_group }}"
     src: ../files/remote-desktop.jinja
 
 - name: vim workaround
