@@ -1,0 +1,7 @@
+- name: maven default - {{ maven['link'] | default("none") }}
+  file:
+    path: "{{ powo_home }}/Documents/apps/maven"
+    state: link
+    src: "{{ powo_home }}/Documents/apps/{{ maven.distributions[maven.link].target_directory }}"
+  when: "{{ maven.link is defined }}"
+  become_user: "{{ powo_user }}"

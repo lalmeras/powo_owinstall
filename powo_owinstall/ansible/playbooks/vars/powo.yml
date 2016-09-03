@@ -44,6 +44,8 @@ modules:
         enabled: true
     maven:
         enabled: true
+        settings:
+            enabled: true
     jdk:
         enabled: true
     eclipse:
@@ -61,6 +63,7 @@ common:
     validate_ssl_certs: false
 
 eclipse:
+    link: owsi-4.5.2-x86_64
     distributions:
         owsi-4.5-x86_64:
             target_filename: owsi-eclipse-jee-mars-4.5-linux-gtk-x86_64.tar.gz
@@ -77,6 +80,7 @@ eclipse:
             desktop_name: Eclipse 4.5.2
 
 jdk:
+    link: 1.7.71-x86_64
     distributions:
         1.7.71-x86_64:
             target_filename: jdk-7u71-linux-x64.tar.gz
@@ -85,6 +89,8 @@ jdk:
             checksum: md5:22761b214b1505f1a9671b124b0f44f4
 
 maven:
+    link: 3.3.9
+    settings_xml: __DOWNLOAD__URL__
     distributions:
         3.2.1:
             target_filename: apache-maven-3.2.1-bin.tar.gz
@@ -99,6 +105,7 @@ maven:
             checksum: md5:516923b3955b6035ba6b0a5b031fbd8b
 
 tomcat:
+    link: 7.0.53
     distributions:
         7.0.53:
             target_filename: apache-tomcat-7.0.53.tar.gz

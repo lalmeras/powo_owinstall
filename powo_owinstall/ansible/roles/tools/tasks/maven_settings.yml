@@ -1,0 +1,13 @@
+- name: maven .m2
+  file:
+    state: directory
+    path: "{{ powo_home }}/.m2"
+  become_user: "{{ powo_user }}"
+
+- name: maven settings.xml
+  get_url:
+    url: "{{ maven.settings_xml }}"
+    dest: "{{ powo_home }}/.m2/settings.xml"
+    validate_certs: "{{ common.validate_ssl_certs }}"
+  become_user: "{{ powo_user }}"
+
