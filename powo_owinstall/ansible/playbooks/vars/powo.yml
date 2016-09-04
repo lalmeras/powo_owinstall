@@ -7,6 +7,8 @@ modules:
             enabled: true
     bash_config:
         enabled: true
+    backports:
+        enabled: true
     postgresql:
         enabled: true
         security:

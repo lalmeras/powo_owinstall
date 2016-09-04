@@ -1,0 +1,10 @@
+- name: backports
+  package:
+    pkg:
+      - linux-generic-lts-xenial
+      - xserver-xorg-core-lts-xenial
+      - xserver-xorg-lts-xenial
+      - xserver-xorg-video-all-lts-xenial
+      - xserver-xorg-input-all-lts-xenial
+      - libwayland-egl1-mesa-lts-xenial
+  when: ansible_distribution_release == 'trusty'

@@ -12,6 +12,8 @@
 - name: 70-persistent-net.rules delete
   file: path=/etc/udev/rules.d/70-persistent-net.rules state=absent
 
+- include: backports.yml
+  when: modules.backports.enabled | default(False)
 - include: apparmor_disabled.yml
   when: modules.disable_security.enabled | default(False) and ansible_distribution == 'Ubuntu'
 - include: selinux_disabled.yml
