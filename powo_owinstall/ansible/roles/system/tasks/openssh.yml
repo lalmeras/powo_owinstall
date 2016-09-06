@@ -10,11 +10,55 @@
     value: "yes"
   when: modules.openssh.root_login.enabled
 
-- name: openssh enables ssh-dss
+- name: check openssh version
+  shell: ssh -V 2>&1 | sed 's@^OpenSSH_\([^,]\+\).*@\1@'
+  changed_when: no
+  register: result_openssh
+
+- block:
+  - name: openssh check enable ssh-dss
+    augeas:
+      command: match
+      path: /files/etc/ssh/ssh_config/PubkeyAcceptedKeyTypes/*
+    register: current_pubkeyacceptedtypes
+
+  - name: openssh check host entry
+    augeas:
+      command: match
+      path: /files/etc/ssh/ssh_config/Host
+    register: current_host
+
+  - name: openssh enables ssh-dss (insert before first Host)
+    augeas:
+      commands: |
+        ins PubkeyAcceptedKeyTypes before /files/etc/ssh/ssh_config/Host[1]
+        set /files/etc/ssh/ssh_config/PubkeyAcceptedKeyTypes/1 +ssh-dss
+    when: |
+      current_pubkeyacceptedtypes.result | default([]) | length == 0
+      and current_host.result | default([]) | length > 0
+
+  - name: openssh enables ssh-dss (insert at end)
+    augeas:
+      commands: |
+        ins PubkeyAcceptedKeyTypes after /files/etc/ssh/ssh_config/*[last()]
+        set /files/etc/ssh/ssh_config/PubkeyAcceptedKeyTypes/1 +ssh-dss
+    when: |
+      current_pubkeyacceptedtypes.result | default([]) | length == 0
+      and current_host.result | default([]) | length == 0
+
+  - name: openssh enables ssh-dss (modify)
+    augeas:
+      command: set
+      path: /files/etc/ssh/ssh_config/PubkeyAcceptedKeyTypes/{{ current_pubkeyacceptedtypes.result | length }}
+      value: +ssh-dss
+    when: |
+      current_pubkeyacceptedtypes.result | default([]) | length > 0
+      and 'ssh-dss' not in current_pubkeyacceptedtypes.result | map(attribute='value')
+      and '+ssh-dss' not in current_pubkeyacceptedtypes.result | map(attribute='value')
+
+  when: result_openssh.stdout | version_compare('7.0', '>=')
+
+- name: openssh fix configuration 
   augeas:
-    command: set
+    command: rm
     path: /files/etc/ssh/sshd_config/PubkeyAcceptedKeyTypes
-    value: "+ssh-dss"
-  when: modules.openssh.dsa_pub.enabled
-
-
