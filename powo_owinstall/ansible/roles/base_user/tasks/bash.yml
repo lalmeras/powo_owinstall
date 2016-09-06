@@ -6,7 +6,7 @@
       group: "{{ powo_group }}"
       mode: u=rwx,g=rwx,o=rx
       state: directory
-  
+
   - name: bashrc.d loading
     blockinfile:
       create: false
@@ -20,7 +20,7 @@
           if [ -d "$HOME/.bashrc.d" -a $( find "$HOME/.bashrc.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
               . $HOME/.bashrc.d/*.conf
           fi
-  
+
   - name: bash_profile.d directory
     file:
       path: "{{ powo_home }}/.bash_profile.d"
@@ -28,7 +28,7 @@
       group: "{{ powo_group }}"
       mode: u=rwx,g=rwx,o=rx
       state: directory
-  
+
   - name: bash_profile.d loading
     blockinfile:
       create: yes
@@ -42,15 +42,37 @@
           if [ -d "$HOME/.bash_profile.d" -a $( find "$HOME/.bash_profile.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
               . $HOME/.bash_profile.d/*.conf
           fi
-  
-  - name: bash_profile.d/powo.conf
+
+  - name: profile.d directory
+    file:
+      path: "{{ powo_home }}/.profile.d"
+      owner: "{{ powo_user }}"
+      group: "{{ powo_group }}"
+      mode: u=rwx,g=rwx,o=rx
+      state: directory
+
+  - name: profile.d loading
+    blockinfile:
+      create: yes
+      dest: "{{ powo_home }}/.profile"
+      owner: "{{ powo_user }}"
+      group: "{{ powo_group }}"
+      mode: u=rw,g=rw,o=r
+      state: present
+      insertafter: EOF
+      block: |
+          if [ -d "$HOME/.profile.d" -a $( find "$HOME/.profile.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
+              . $HOME/.profile.d/*.conf
+          fi
+
+  - name: profile.d/powo.conf
     template:
-      dest: "{{ powo_home }}/.bash_profile.d/powo.conf"
+      dest: "{{ powo_home }}/.profile.d/powo.conf"
       force: yes
       owner: "{{ powo_user }}"
       group: "{{ powo_group }}"
       mode: u=rw,g=rw,o=r
-      src: ../files/bash_profile.d_powo.conf.jinja
-  
+      src: ../files/profile.d_powo.conf.jinja
+
   when: modules.bash_config.enabled | default(False)
   become_user: "{{ powo_user }}"
