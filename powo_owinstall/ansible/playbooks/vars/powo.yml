@@ -1,61 +1,63 @@
 modules:
+    home_data_switch:
+        enabled: false
     user:
-        enabled: true
+        enabled: false
         switch_home:
-            enabled: true
+            enabled: false
         keygen:
-            enabled: true
+            enabled: false
     bash_config:
-        enabled: true
+        enabled: false
     backports:
-        enabled: true
+        enabled: false
     postgresql:
-        enabled: true
+        enabled: false
         security:
-            enabled: true
+            enabled: false
         shared_memory:
-            enabled: true
+            enabled: false
         switch_data:
-            enabled: true
-    memcached: true
+            enabled: false
+    memcached: false
     openssh:
-        enabled: true
+        enabled: false
         root_login:
-            enabled: true
+            enabled: false
         dsa_pub:
-            enabled: true
+            enabled: false
     apache:
-        enabled: true
+        enabled: false
     mysql:
-        enabled: true
+        enabled: false
         switch_data:
-            enabled: true
+            enabled: false
     mountpoints:
-        enabled: true
+        enabled: false
     disable_security:
-        enabled: true
+        enabled: false
     data_services:
-        enabled: true
+        enabled: false
     misc:
-        enabled: true
+        enabled: false
     chrome:
-        enabled: true
+        enabled: false
     virtualbox:
-        enabled: true
+        enabled: false
     tomcat:
-        enabled: true
+        enabled: false
     maven:
-        enabled: true
+        enabled: false
         settings:
-            enabled: true
+            enabled: false
     jdk:
-        enabled: true
+        enabled: false
     eclipse:
-        enabled: true
+        enabled: false
     cinnamon:
-        enabled: true
+        enabled: false
     gnome:
-        enabled: true
+        enabled: false
 
 powo_group: "{{ powo_user }}"
 powo_password: "{{ lookup('env', 'POWO_PASSWORD') }}"
