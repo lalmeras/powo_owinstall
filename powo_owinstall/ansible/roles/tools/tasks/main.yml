@@ -4,21 +4,27 @@
 
 - include: eclipse_item.yml
   with_dict: "{{ eclipse.distributions }}"
-  when: modules.eclipse.enabled | default(False)
+  when:
+    - modules.eclipse.enabled | default(False)
+    - item.value.enabled | default(
 
 - include: eclipse_link.yml
   when: modules.eclipse.enabled | default(False)
 
 - include: jdk_item.yml
   with_dict: "{{ jdk.distributions }}"
-  when: modules.jdk.enabled | default(False)
+  when:
+    - modules.jdk.enabled | default(False)
+    - item.value.enabled | default(
 
 - include: jdk_link.yml
   when: modules.jdk.enabled | default(False)
 
 - include: maven_item.yml
   with_dict: "{{ maven.distributions }}"
-  when: modules.maven.enabled | default(False)
+  when:
+    - modules.maven.enabled | default(False)
+    - item.value.enabled | default(
 
 - include: maven_link.yml
   when: modules.maven.enabled | default(False)
@@ -28,7 +34,9 @@
 
 - include: tomcat_item.yml
   with_dict: "{{ tomcat.distributions }}"
-  when: modules.tomcat.enabled | default(False)
+  when:
+    - modules.tomcat.enabled | default(False)
+    - item.value.enabled | default(
 
 - include: tomcat_link.yml
   when: modules.tomcat.enabled | default(False)
