@@ -1,0 +1,39 @@
+- name: find fstab /home entry
+  augeas:
+    command: match
+    path: /files/etc/fstab/*[file='/home']
+  register: home_fstab
+
+- name: find fstab /data entry
+  augeas:
+    command: match
+    path: /files/etc/fstab/*[file='/data']
+  register: data_fstab
+
+- block:
+  - name: mkdir /home in data partition
+    file:
+      state: directory
+      path: /home/home
+
+  - name: mv all users' home in /home/home
+    shell: find /home -mindepth 1 -maxdepth 1 ! -name home -exec mv {} /home/home/ \;
+
+  - name: move /data content to actual home partition's root
+    shell: mkdir -p /data && find /data -mindepth 1 -maxdepth 1 -exec mv {} /home/ \;
+
+  - name: update fstab /home entry to /data
+    augeas:
+      command: set
+      path: "{{ home_fstab.result[0].label }}/file"
+      value: /data
+
+  - name: remount /data
+    shell: umount /home && rmdir /home && mount /data
+
+  - name: link /home
+    file:
+      state: link
+      src: /data/home
+      path: /home
+  when: home_fstab.result | length == 1 and data_fstab.result | length == 0
