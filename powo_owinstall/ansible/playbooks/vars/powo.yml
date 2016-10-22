@@ -99,8 +99,6 @@ jdk:
             url: __DOWNLOAD_URL__
             checksum: md5:22761b214b1505f1a9671b124b0f44f4
 
-    link: 1.8.102-x86_64
-    distributions:
         1.8.102-x86_64:
             target_filename: jdk-8u102-linux-x64.tar.gz
             target_directory: jdk-1.8.102-x86_64
