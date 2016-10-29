@@ -41,6 +41,9 @@
       state: present
       insertafter: EOF
       block: |
+          if [ -f "$HOME/.profile" ]; then
+            source "$HOME/.profile"
+          fi
           if [ -d "$HOME/.bash_profile.d" -a $( find "$HOME/.bash_profile.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
               for item in $( find "$HOME/.bash_profile.d" -type f -name "*.conf" ); do
                 source "$item"
