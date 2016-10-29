@@ -18,7 +18,9 @@
       insertafter: EOF
       block: |
           if [ -d "$HOME/.bashrc.d" -a $( find "$HOME/.bashrc.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
-              . $HOME/.bashrc.d/*.conf
+              for item in $( find "$HOME/.bashrc.d" -type f -name "*.conf" ); do
+                source "$item"
+              done
           fi
 
   - name: bash_profile.d directory
@@ -40,7 +42,9 @@
       insertafter: EOF
       block: |
           if [ -d "$HOME/.bash_profile.d" -a $( find "$HOME/.bash_profile.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
-              . $HOME/.bash_profile.d/*.conf
+              for item in $( find "$HOME/.bash_profile.d" -type f -name "*.conf" ); do
+                source "$item"
+              done
           fi
 
   - name: profile.d directory
@@ -62,7 +66,9 @@
       insertafter: EOF
       block: |
           if [ -d "$HOME/.profile.d" -a $( find "$HOME/.profile.d" -type f -name "*.conf" | wc -l ) -ne 0 ]; then
-              . $HOME/.profile.d/*.conf
+              for item in $( find "$HOME/.profile.d" -type f -name "*.conf" ); do
+                source "$item"
+              done
           fi
 
   - name: profile.d/powo.conf
