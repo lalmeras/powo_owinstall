@@ -38,7 +38,7 @@
     enabled: yes
     gpgcheck: yes
     gpgkey: http://repos.fedorapeople.org/repos/spot/chromium/spot.gpg
-  when: ansible_distribution == 'Fedora'
+  when: ansible_distribution == 'Fedora' and ansible_distribution_release|int < 24
 
 - name: chromium installation
   package: name={{ item }} state=present
