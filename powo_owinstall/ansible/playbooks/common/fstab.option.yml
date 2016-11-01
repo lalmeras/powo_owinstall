@@ -9,5 +9,5 @@
     commands: |
       ins opt after {{ item.label }}/opt[last()]
       set {{ item.label }}/opt[last()] {{ option }}
-  with_items: "{{ fstab_opt.result }}"
+  with_items: "{{ fstab_opt.result is defined and fstab_opt.result }}"
   when: "fstab_opt.result|length != 0"
