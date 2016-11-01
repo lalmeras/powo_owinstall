@@ -1,6 +1,8 @@
 virtualbox:
   packages:
     - VirtualBox-5.0
+    - kernel-devel
+    - dkms
 
 chromium:
   packages:
