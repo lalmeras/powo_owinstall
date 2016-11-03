@@ -68,6 +68,7 @@ common:
 
 eclipse:
     link: owsi-4.5.2-x86_64
+    default_vmargs: "-Xmx1512m"
     distributions:
         owsi-4.5-x86_64:
             target_filename: owsi-eclipse-jee-mars-4.5-linux-gtk-x86_64.tar.gz
@@ -89,6 +90,7 @@ eclipse:
             url: __DOWNLOAD_URL__
             checksum: __CHECKSUM__
             desktop_name: Eclipse 4.6
+            vm: "{{ powo_home }}/Documents/apps/jdk-1.8.102-x86_64/bin/java"
 
 jdk:
     link: 1.7.71-x86_64

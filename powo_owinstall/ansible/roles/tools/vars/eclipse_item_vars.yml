@@ -5,3 +5,5 @@ install_destination: "{{ powo_home }}/Documents/apps/{{ item.value.target_direct
 eclipse_bin_path: "{{ install_destination }}/eclipse"
 eclipse_description: "{{ item.value.desktop_description|default(item.value.desktop_name) }}"
 eclipse_icon_path: "{{ install_destination }}/icon.xpm"
+eclipse_vmargs: "{{ item.value.vmargs | default(eclipse.default_vmargs | default(None)) }}"
+eclipse_vm: "{{ item.value.vm | default(eclipse.default_vm | default(None)) }}"
