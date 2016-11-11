@@ -56,7 +56,10 @@
       and 'ssh-dss' not in current_pubkeyacceptedtypes.result | map(attribute='value')
       and '+ssh-dss' not in current_pubkeyacceptedtypes.result | map(attribute='value')
 
-  when: result_openssh.stdout | version_compare('7.0', '>=')
+  when:
+    - result_openssh.stdout | version_compare('7.0', '>=')
+    # augeas ubuntu config is broken and does not allow PubkeyAcceptedKeyTypes
+    - ansible_distribution != 'Ubuntu'
 
 - name: openssh fix configuration 
   augeas:
