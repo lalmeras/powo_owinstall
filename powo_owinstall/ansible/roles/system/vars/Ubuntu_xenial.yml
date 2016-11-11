@@ -4,7 +4,7 @@ postgresql:
     - postgresql
     - postgresql-client
     - postgresql-contrib
-    - postgresql-postgis
+    - postgresql-9.5-postgis-2.2
 
 php:
   packages:
