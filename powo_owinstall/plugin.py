@@ -33,13 +33,14 @@ def powo_plugin():
 def on_run(click_ctx, play, variable_manager, loader):
     vars = variable_manager.get_vars(loader, play=play)
     templar = ansible.template.Templar(loader=loader, variables=vars)
+    no_user = click_ctx.params['no_user']
     if click_ctx.params['ow_username']:
         powo_user = click_ctx.params['ow_username']
         _update_extra_vars(variable_manager, 'powo_user', powo_user)
     else:
         powo_user = get_var(templar, vars, 'powo_user')
     # enforce valid username
-    while not validate_username(powo_user):
+    while not no_user and not validate_username(powo_user):
         if not sys.stdin.isatty():
             raise click.ClickException('powo_user not found and terminal '
                                        'is not interactive')
@@ -52,14 +53,15 @@ def on_run(click_ctx, play, variable_manager, loader):
                        'powo_home', '/home/%s' % (powo_user))
     vars = variable_manager.get_vars(loader, play=play)
     pass_needed = True
-    try:
-        pwd.getpwnam(powo_user)
-        pass_needed = False
-    except KeyError:
-        pass
-    if pass_needed:
+    if powo_user is not None:
+        try:
+            pwd.getpwnam(powo_user)
+            pass_needed = False
+        except KeyError:
+            pass
+    if not no_user and pass_needed:
         powo_password = get_var(templar, vars, 'powo_password')
-        if not powo_password:
+        if not no_user and not powo_password:
             if not sys.stdin.isatty():
                 raise click.ClickException(
                     'powo_password not found and terminal'
@@ -118,6 +120,8 @@ def _update_extra_vars(variable_manager, key, value):
 
 
 def decorate_update(update):
+    click.option('--no-user', is_flag=True,
+                 help='no user account is needed')(update)
     click.option('--ow-username', default=None,
                  help='user account to manage (default from configuration file)'
                  )(update)
