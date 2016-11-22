@@ -22,13 +22,12 @@ Open Wide base installation (powo plugin)
 
 
 * Free software: Apache Software License 2.0
-* Documentation: https://powo-owinstall.readthedocs.io.
 
 
 Features
 --------
 
-* TODO
+powo_owinstall provides fast initialization for developer's desktop.
 
 Credits
 ---------
