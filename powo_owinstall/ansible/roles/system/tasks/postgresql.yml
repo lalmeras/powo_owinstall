@@ -65,13 +65,17 @@
   - name: postgresql network
     augeas:
       command: match
-      path: /files{{ postgresql.conf_dir }}/postgresql.conf/listen_addresses[ . = '*' ]
+      lens: postgresql
+      file: "{{ postgresql.conf_dir }}/postgresql.conf"
+      path: listen_addresses[ . = '*' ]
     register: listen_addresses
   
   - name: postgresql network
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/postgresql.conf/#comment[ . =~ regexp('.*listen_addresses.=..*') ]"
+      lens: postgresql
+      file: "{{ postgresql.conf_dir }}/postgresql.conf"
+      path: "#comment[ . =~ regexp('.*listen_addresses.=..*') ]"
     register: listen_addresses_comment
   
   - name: postgresql network
@@ -91,13 +95,17 @@
   - name: postgresql security (postgres/local)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres'][method='trust']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='local'][database='all'][user='postgres'][method='trust']"
     register: local_postgres_trust
   
   - name: postgresql security (postgres/local)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='postgres']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='local'][database='all'][user='postgres']"
     register: local_postgres
   
   - name: postgresql security (postgres/local)
@@ -121,13 +129,17 @@
   - name: postgresql security (all/local)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all'][method='trust']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='local'][database='all'][user='all'][method='trust']"
     register: local_all_trust
   
   - name: postgresql security (all/local)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='local'][database='all'][user='all']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='local'][database='all'][user='all']"
     register: local_all
   
   - name: postgresql security (all/local)
@@ -151,13 +163,17 @@
   - name: postgresql security (all/localhost)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32'][method='md5']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='host'][database='all'][user='all'][address='127.0.0.1/32'][method='md5']"
     register: localhost_all_md5
   
   - name: postgresql security (all/localhost)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='127.0.0.1/32']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='host'][database='all'][user='all'][address='127.0.0.1/32']"
     register: localhost_all
   
   - name: postgresql security (all/localhost)
@@ -182,13 +198,17 @@
   - name: postgresql security (all/network)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0'][method='md5']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='host'][database='all'][user='all'][address='0.0.0.0/0'][method='md5']"
     register: network_all_md5
   
   - name: postgresql security (all/network)
     augeas:
       command: match
-      path: "/files{{ postgresql.conf_dir }}/pg_hba.conf/*[type='host'][database='all'][user='all'][address='0.0.0.0/0']"
+      lens: pg_hba
+      file: "{{ postgresql.conf_dir }}/pg_hba.conf"
+      path: "*[type='host'][database='all'][user='all'][address='0.0.0.0/0']"
     register: network_all
   
   - name: postgresql security (all/network)
