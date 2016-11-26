@@ -50,4 +50,4 @@
   - name: starting mysql
     service: name={{ mysql.service }} state=started
 
-  when: modules.mysql.switch_data | default(False)
+  when: modules.mysql.switch_data.enabled | default(False)
