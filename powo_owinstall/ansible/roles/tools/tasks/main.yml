@@ -2,6 +2,12 @@
   with_first_found:
     - "{{ ansible_distribution }}.yml"
 
+- name: eclipse libwebkitgtk
+  package:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ eclipse.libwebkitgtk }}"
+
 - include: eclipse_item.yml
   with_dict: "{{ eclipse.distributions }}"
   when:

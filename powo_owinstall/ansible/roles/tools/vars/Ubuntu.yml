@@ -27,3 +27,8 @@ misc:
     - graphviz
     - imagemagick
     - cifs-utils
+
+eclipse:
+  libwebkitgtk:
+    - libwebkitgtk-1.0-0
+    - libwebkitgtk-3.0-0
