@@ -11,3 +11,8 @@
     validate_certs: "{{ common.validate_ssl_certs }}"
   become_user: "{{ powo_user }}"
 
+- name: maven toolchains.xml
+  template:
+    src: toolchains.xml.j2
+    dest: "{{ powo_home }}/.m2/toolchains.xml"
+  become_user: "{{ powo_user }}"
