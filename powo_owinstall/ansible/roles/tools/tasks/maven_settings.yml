@@ -9,6 +9,7 @@
     url: "{{ maven.settings_xml }}"
     dest: "{{ powo_home }}/.m2/settings.xml"
     validate_certs: "{{ common.validate_ssl_certs }}"
+    force: yes
   become_user: "{{ powo_user }}"
 
 - name: maven toolchains.xml
