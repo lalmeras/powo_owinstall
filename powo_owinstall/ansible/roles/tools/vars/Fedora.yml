@@ -26,6 +26,7 @@ misc:
     - graphviz
     - ImageMagick
     - cifs-utils
+    - bash-completion
 
 eclipse:
   libwebkitgtk:
