@@ -46,6 +46,8 @@ modules:
         enabled: false
     tomcat:
         enabled: false
+    squirrel:
+        enabled: false
     maven:
         enabled: false
         settings:
@@ -153,6 +155,13 @@ tomcat:
             target_directory: apache-tomcat-7.0.53
             url: __DOWNLOAD_URL__
             checksum: md5:7062e134b4390e2ce6b54081aab26e3c
+
+squirrel:
+    link: 3.7.1
+    target_filename: squirrelsql-3.7.1-optional.zip
+    target_directory: squirrelsql-3.7.1
+    url: https://superb-dca2.dl.sourceforge.net/project/squirrel-sql/1-stable/3.7.1-plainzip/squirrelsql-3.7.1-optional.zip
+    checksum: sha1:0c3d8034808574c80ea8b8212a53547df30f975a
 
 remote:
     client_hostname: "{{ powo_user }}"

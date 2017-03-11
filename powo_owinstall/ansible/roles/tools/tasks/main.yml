@@ -32,6 +32,9 @@
     - modules.maven.enabled | default(False)
     - item.value.enabled | default(False)
 
+- include: squirrel.yml
+  when: modules.squirrel.enabled | default(False)
+
 - include: maven_link.yml
   when: modules.maven.enabled | default(False)
 

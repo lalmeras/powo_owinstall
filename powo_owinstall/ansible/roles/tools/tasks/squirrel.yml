@@ -1,0 +1,64 @@
+---
+- include_vars: squirrel_vars.yml
+
+- name: prepare tools folder
+  file:
+    path: "{{ _squirrel_archive_destination_folder }}"
+    state: directory
+    mode: u=rwx,g=rwx,o=rx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_group }}"
+
+- name: prepare apps folder
+  file:
+    path: "{{ _squirrel_install_destination }}"
+    state: directory
+    mode: u=rwx,g=rwx,o=rx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_group }}"
+
+- name: prepare desktop folder
+  file:
+    path: "{{ powo_home }}/.local/share/applications"
+    state: directory
+    mode: u=rwx,g=rwx,o=rx
+    owner: "{{ powo_user }}"
+    group: "{{ powo_group }}"
+
+- name: download squirrel
+  get_url:
+    url: "{{ squirrel.url }}"
+    dest: "{{ _squirrel_archive_destination }}"
+    checksum: "{{ squirrel.checksum }}"
+    validate_certs: "{{ common.validate_ssl_certs }}"
+    owner: "{{ powo_user }}"
+    group: "{{ powo_group }}"
+  become_user: "{{ powo_user }}"
+
+- name: install link
+  file:
+    path: "{{ _squirrel_install_destination }}/squirrelsql-3.7.1-optional"
+    src: "."
+    state: link
+
+- name: install squirrel
+  unarchive:
+    src: "{{ _squirrel_archive_destination }}"
+    dest: "{{ _squirrel_install_destination }}"
+    remote_src: yes
+    extra_opts:
+  become_user: "{{ powo_user }}"
+
+- name: squirrel desktop file
+  template:
+    dest: "{{ powo_home }}/.local/share/applications/{{ squirrel.target_directory }}.desktop"
+    force: yes
+    owner: "{{ powo_user }}"
+    group: "{{ powo_group }}"
+    mode: u=rw,g=rw,o=r
+    src: squirrel.desktop.j2
+
+- name: squirrel executable
+  file:
+    path: "{{ _squirrel_bin_path }}"
+    mode: ugo+x

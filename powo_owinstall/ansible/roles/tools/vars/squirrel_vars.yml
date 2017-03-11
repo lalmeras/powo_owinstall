@@ -1,0 +1,7 @@
+_squirrel_archive_destination_folder: "{{ powo_home }}/Documents/tools/squirrel"
+_squirrel_archive_destination: "{{ _squirrel_archive_destination_folder }}/{{ squirrel.target_filename }}"
+_squirrel_install_destination: "{{ powo_home }}/Documents/apps/{{ squirrel.target_directory }}"
+_squirrel_desktop_name: "Squirrel"
+_squirrel_desktop_description: "Universal SQL client"
+_squirrel_bin_path: "{{ '/'.join([_squirrel_install_destination, 'squirrel-sql.sh']) }}"
+_squirrel_icon_path: "{{ '/'.join([_squirrel_install_destination, 'icons', 'acorn.png']) }}"
