@@ -28,6 +28,8 @@ misc:
     - imagemagick
     - cifs-utils
     - bash-completion
+    - zip
+    - unzip
 
 eclipse:
   libwebkitgtk:

@@ -27,6 +27,8 @@ misc:
     - ImageMagick
     - cifs-utils
     - bash-completion
+    - zip
+    - unzip
 
 eclipse:
   libwebkitgtk:
