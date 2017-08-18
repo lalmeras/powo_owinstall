@@ -9,13 +9,7 @@
     - [ "vars/first-run.yml", "vars/empty.yml" ]
     - [ "vars/env.yml", "vars/empty.yml" ]
   roles:
-    # modules
-    - paluh.augeas
-    # configurations
-    - base
-    - system
-    - base_user
-    - tools
-    - desktop
-    - purge-old-kernels
+    - role: purge-old-kernels
+      pok_keep: "{{ playbook_pok_keep | default(None) }}"
+      when: "{{ ansible_os_family == 'Ubuntu' }}"
   environment: "{{ env_vars|default({}) }}"

@@ -1,0 +1,20 @@
+---
+- name: byobu
+  package:
+    name: byobu
+
+- file:
+    path: /usr/bin/purge-old-kernels
+    state: file
+
+- name: crontab
+  copy:
+    content: |
+      #! /bin/bash
+
+      /usr/bin/purge-old-kernels -y {{ pok_keep if pok_keep | bool else '' }}
+
+    dest: /etc/cron.daily/purge-old-kernels
+    owner: root
+    group: root
+    mode: u=rwx,g=rx,o=r
