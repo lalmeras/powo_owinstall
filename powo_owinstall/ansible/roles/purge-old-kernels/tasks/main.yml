@@ -1,4 +1,13 @@
 ---
+- name: ubuntu trusty
+  when: >
+    ansible_distribution == 'Ubuntu'
+    and ansible_distribution_version == '14.04'
+  block:
+  - name: byobu ppa
+    apt_repository:
+      repo: 'ppa:byobu/ppa'
+
 - name: byobu
   package:
     name: byobu
