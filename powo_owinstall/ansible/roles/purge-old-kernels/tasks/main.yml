@@ -9,8 +9,9 @@
       repo: 'ppa:byobu/ppa'
 
 - name: byobu
-  package:
+  apt:
     name: byobu
+    state: latest
 
 - file:
     path: /usr/bin/purge-old-kernels
