@@ -17,5 +17,6 @@
     - base_user
     - tools
     - desktop
-    - purge-old-kernels
+    - role: purge-old-kernels
+      when: ansible_distribution == 'Ubuntu'
   environment: "{{ env_vars|default({}) }}"
