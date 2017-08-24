@@ -22,7 +22,7 @@
     content: |
       #! /bin/bash
 
-      /usr/bin/purge-old-kernels -y {{ pok_keep if pok_keep | bool else '' }}
+      /usr/bin/purge-old-kernels -y {{ pok_keep if pok_keep is not none else '' }}
 
     dest: /etc/cron.daily/purge-old-kernels
     owner: root
