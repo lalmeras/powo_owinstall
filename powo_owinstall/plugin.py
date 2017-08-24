@@ -7,8 +7,6 @@ import pkg_resources
 import re
 import sys
 
-import ansible.template
-
 import powo.model
 import click
 
@@ -30,60 +28,60 @@ def powo_plugin():
     )
 
 
-def on_run(click_ctx, play, variable_manager, loader):
-    vars = variable_manager.get_vars(loader, play=play)
-    templar = ansible.template.Templar(loader=loader, variables=vars)
-    no_user = click_ctx.params['no_user']
-    if click_ctx.params['ow_username']:
-        powo_user = click_ctx.params['ow_username']
-        _update_extra_vars(variable_manager, 'powo_user', powo_user)
-    else:
-        powo_user = get_var(templar, vars, 'powo_user')
-    # enforce valid username
-    while not no_user and not validate_username(powo_user):
-        if not sys.stdin.isatty():
-            raise click.ClickException('powo_user not found and terminal '
-                                       'is not interactive')
-        powo_user = \
-            click.prompt('Please provide a valid username ; '
-                         'this user will be created if missing',
-                         type=click.STRING)
-    _update_extra_vars(variable_manager, 'powo_user', powo_user)
-    _update_extra_vars(variable_manager,
-                       'powo_home', '/home/%s' % (powo_user))
-    vars = variable_manager.get_vars(loader, play=play)
-    pass_needed = True
-    if powo_user is not None:
-        try:
-            pwd.getpwnam(powo_user)
-            pass_needed = False
-        except KeyError:
-            pass
-    if not no_user and pass_needed:
-        powo_password = get_var(templar, vars, 'powo_password')
-        if not no_user and not powo_password:
+def on_run(ctx, extra_vars):
+    no_user = ctx.params['no_user']
+    powo_user = None
+
+    if not no_user:
+        if ctx.params['ow_username']:
+            powo_user = ctx.params['ow_username']
+        elif extra_vars['ow_username']:
+            powo_user = extra_vars['ow_username']
+
+        # enforce valid username
+        while not no_user and not validate_username(powo_user):
             if not sys.stdin.isatty():
-                raise click.ClickException(
-                    'powo_password not found and terminal'
-                    'is not interactive')
-            powo_password = \
-                click.prompt(
-                    'Please provide a password for user %s'
-                    % (powo_user),
-                    type=click.STRING, hide_input=True,
-                    confirmation_prompt=True)
-            _update_extra_vars(variable_manager, 'powo_password', powo_password)
-    if click_ctx.params['ow_fullname']:
-        _update_extra_vars(variable_manager, 'powo_fullname',
-                           click_ctx.params['ow_fullname'])
-    if click_ctx.params['ow_group']:
-        _update_extra_vars(variable_manager, 'powo_group',
-                           click_ctx.params['ow_group'])
-    if click_ctx.params['ow_ask_ssh_passphrase']:
-        powo_passphrase = get_var(templar, vars, 'powo_passphrase')
-        if powo_passphrase:
-            pass
-        else:
+                raise click.ClickException('powo_user not found and terminal '
+                                           'is not interactive')
+            powo_user = \
+                click.prompt('Please provide a valid username ; '
+                             'this user will be created if missing',
+                             type=click.STRING)
+
+        extra_vars['powo_user'] = powo_user
+        extra_vars['powo_home'] = '/home/%s' % (powo_user)
+        pass_needed = True
+        if powo_user is not None:
+            try:
+                pwd.getpwnam(powo_user)
+                pass_needed = False
+            except KeyError:
+                pass
+        if not no_user and pass_needed:
+            powo_password = None
+            if not no_user and not powo_password:
+                if not sys.stdin.isatty():
+                    raise click.ClickException(
+                        'powo_password not found and terminal'
+                        'is not interactive')
+                powo_password = \
+                    click.prompt(
+                        'Please provide a password for user %s'
+                        % (powo_user),
+                        type=click.STRING, hide_input=True,
+                        confirmation_prompt=True)
+                extra_vars['powo_password'] = powo_password
+        if ctx.params['ow_fullname']:
+            extra_vars['powo_fullname'] = ctx.params['ow_fullname']
+        elif 'ow_fullname' in extra_vars and extra_vars['ow_fullname']:
+            extra_vars['powo_fullname'] = extra_vars['ow_fullname']
+
+        if ctx.params['ow_group']:
+            extra_vars['powo_group'] = ctx.params['ow_group']
+        elif 'ow_group' in extra_vars and extra_vars['ow_group']:
+            extra_vars['powo_group'] = extra_vars['ow_group']
+
+        if ctx.params['ow_ask_ssh_passphrase']:
             if not sys.stdin.isatty():
                 raise click.ClickException(
                     'powo_passphrase not found and terminal '
@@ -94,8 +92,7 @@ def on_run(click_ctx, play, variable_manager, loader):
                     % (powo_user),
                     type=click.STRING, hide_input=True,
                     confirmation_prompt=True)
-            _update_extra_vars(variable_manager,
-                               'powo_passphrase', powo_passphrase)
+            extra_vars['powo_passphrase'] =  powo_passphrase
 
 
 def get_var(templar, vars, name):

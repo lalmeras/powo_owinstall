@@ -11,5 +11,5 @@
   roles:
     - role: purge-old-kernels
       pok_keep: "{{ playbook_pok_keep | default(None) }}"
-      when: "{{ ansible_distribution == 'Ubuntu' }}"
+      when: ansible_distribution == 'Ubuntu'
   environment: "{{ env_vars|default({}) }}"
