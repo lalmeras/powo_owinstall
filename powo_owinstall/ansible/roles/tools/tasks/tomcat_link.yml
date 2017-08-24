@@ -3,5 +3,5 @@
     path: "{{ powo_home }}/Documents/apps/tomcat"
     state: link
     src: "{{ powo_home }}/Documents/apps/{{ tomcat.distributions[tomcat.link].target_directory }}"
-  when: "{{ tomcat.link is defined }}"
+  when: tomcat.link is defined
   become_user: "{{ powo_user }}"

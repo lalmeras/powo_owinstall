@@ -24,7 +24,7 @@
 
 - name: google chrome installation
   debug: msg="google chrome is unsupported on x86 architecture ; use chromium"
-  when: "{{ t_ubuntu_chrome_repository|skipped and t_fedora_chrome_repository|skipped }}"
+  when: t_ubuntu_chrome_repository|skipped and t_fedora_chrome_repository|skipped
 
 - name: google chrome installation
   package: name=google-chrome-stable state=present

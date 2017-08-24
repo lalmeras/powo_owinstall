@@ -3,5 +3,5 @@
     path: "{{ powo_home }}/Documents/apps/java"
     state: link
     src: "{{ powo_home }}/Documents/apps/{{ jdk.distributions[jdk.link].target_directory }}"
-  when: "{{ jdk.link is defined }}"
+  when: jdk.link is defined
   become_user: "{{ powo_user }}"
