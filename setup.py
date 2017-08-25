@@ -21,7 +21,7 @@ test_requirements = [
 
 setup(
     name='powo_owinstall',
-    version='1.0.0',
+    version='1.0.1rc',
     description="Open Wide base installation (powo plugin)",
     long_description=readme + '\n\n' + history,
     author="Laurent Almeras",
