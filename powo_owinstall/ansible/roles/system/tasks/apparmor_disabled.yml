@@ -5,6 +5,7 @@
     && apparmor_status
   register: apparmor_is_enabled
   ignore_errors: yes
+  changed_when: no
 
 - name: disable apparmor
   shell: >
