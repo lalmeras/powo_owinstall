@@ -110,12 +110,6 @@ def validate_username(username):
     return False
 
 
-def _update_extra_vars(variable_manager, key, value):
-    updated_orig = variable_manager.extra_vars
-    updated_orig.update({key: value})
-    variable_manager.extra_vars = updated_orig
-
-
 def decorate_update(update):
     click.option('--no-user', is_flag=True,
                  help='no user account is needed')(update)
