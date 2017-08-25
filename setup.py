@@ -11,7 +11,7 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
-    'powo>=1.0.0rc',
+    'powo==1.0.0',
     'passlib',
     'python-augeas'
 ]
@@ -21,7 +21,7 @@ test_requirements = [
 
 setup(
     name='powo_owinstall',
-    version='1.0.0rc',
+    version='1.0.0',
     description="Open Wide base installation (powo plugin)",
     long_description=readme + '\n\n' + history,
     author="Laurent Almeras",
