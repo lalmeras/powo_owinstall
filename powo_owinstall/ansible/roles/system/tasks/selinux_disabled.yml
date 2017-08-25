@@ -3,6 +3,7 @@
   command: selinuxenabled
   register: selinux_current_is_enabled
   ignore_errors: yes
+  changed_when: no
 
 - name: disable selinux
   command: setenforce 0
