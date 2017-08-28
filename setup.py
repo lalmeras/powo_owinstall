@@ -10,7 +10,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'powo==1.0.2rc',
+    'powo==1.0.2',
     'passlib',
     'python-augeas'
 ]
@@ -20,7 +20,7 @@ test_requirements = [
 
 setup(
     name='powo_owinstall',
-    version='1.0.2rc',
+    version='1.0.2',
     description="Open Wide base installation (powo plugin)",
     long_description=readme + '\n\n' + history,
     author="Laurent Almeras",
