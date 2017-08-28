@@ -10,6 +10,7 @@ chromium:
 
 misc:
   packages:
+    - unzip
     - vim-enhanced
     - gimp
     - thunderbird

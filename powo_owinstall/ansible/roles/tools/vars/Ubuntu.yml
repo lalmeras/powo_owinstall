@@ -8,6 +8,7 @@ chromium:
 
 misc:
   packages:
+    - unzip
     - vim
     - gimp
     - thunderbird
