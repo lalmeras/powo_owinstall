@@ -43,7 +43,7 @@
 
 - name: eclipse desktop file
   template:
-    dest: "{{ powo_home }}/.local/share/applications/{{ distribution.target_directory }}.desktop"
+    dest: "{{ powo_home }}/.local/share/applications/{{ install_destination | basename }}.desktop"
     force: yes
     owner: "{{ powo_user }}"
     group: "{{ powo_group }}"

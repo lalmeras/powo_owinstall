@@ -1,7 +1,17 @@
 distribution: "{{ item.value }}"
 archive_destination_folder: "{{ powo_home }}/Documents/tools/eclipse"
-archive_destination: "{{ powo_home }}/Documents/tools/eclipse/{{ item.value.target_filename }}"
-install_destination: "{{ powo_home }}/Documents/apps/{{ item.value.target_directory }}"
+archive_destination: >-
+  {%- if item.value.target_filename is defined -%}
+    {{ powo_home }}/Documents/tools/eclipse/{{ item.value.target_filename }}
+  {%- else -%}
+    {{ powo_home }}/Documents/tools/eclipse/{{ item.value.url | basename }}
+  {%- endif -%}
+install_destination: >-
+  {%- if item.value.target_directory is defined -%}
+    {{ powo_home }}/Documents/apps/{{ item.value.target_directory }}
+  {%- else -%}
+    {{ powo_home }}/Documents/apps/{{ archive_destination | basename | splitext | first }}
+  {%- endif -%}
 eclipse_bin_path: "{{ install_destination }}/eclipse"
 eclipse_description: "{{ item.value.desktop_description|default(item.value.desktop_name) }}"
 eclipse_icon_path: "{{ install_destination }}/icon.xpm"

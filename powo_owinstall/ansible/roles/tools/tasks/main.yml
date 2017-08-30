@@ -15,7 +15,9 @@
     - item.value.enabled | default(False)
 
 - include: eclipse_link.yml
-  when: modules.eclipse.enabled | default(False)
+  vars:
+    item: "{{ eclipse.distributions[eclipse.link] }}"
+  when: eclipse.link is defined and modules.eclipse.enabled | default(False)
 
 - include: jdk_item.yml
   with_dict: "{{ jdk.distributions }}"

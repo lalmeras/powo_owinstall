@@ -1,7 +1,8 @@
+- include_vars: eclipse_item_vars.yml
+
 - name: eclipse default - {{ eclipse['link'] | default("none") }}
   file:
     path: "{{ powo_home }}/Documents/apps/eclipse"
     state: link
     src: "{{ powo_home }}/Documents/apps/{{ eclipse.distributions[eclipse.link].target_directory }}"
-  when: eclipse.link is defined
   become_user: "{{ powo_user }}"
